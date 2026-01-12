@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Block Blast Puzzle Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- Game Info Section -->
+        <div class="game-info">
+            <div class="info-item">
+                <span class="info-label">Score</span>
+                <span class="info-value" id="score">0</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Lines</span>
+                <span class="info-value" id="lines">0</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Level</span>
+                <span class="info-value" id="level">1</span>
+            </div>
+        </div>
+
+        <!-- Game Controls -->
+        <div class="game-controls">
+            <button class="control-btn hint-btn" id="hintBtn">
+                <span>Hint</span>
+            </button>
+            <button class="control-btn pause-btn" id="pauseBtn">
+                <span id="pauseBtnText">Pause</span>
+            </button>
+        </div>
+
+        <!-- Main Game Area -->
+        <div class="main-game-area">
+            <!-- Game Board -->
+            <div class="game-board-container">
+                <canvas id="gameBoard" width="360" height="360"></canvas>
+                <div class="hint-overlay" id="hintOverlay"></div>
+            </div>
+
+            <!-- Next Shapes Container -->
+            <div class="shapes-container">
+                <div class="shapes-label">Next Blocks</div>
+                <div class="shapes-list" id="shapesList">
+                    <!-- Shapes will be dynamically generated -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Over Modal -->
+    <div class="modal-overlay" id="gameOverModal">
+        <div class="modal-content">
+            <h2 class="modal-title">Congratulations!</h2>
+            <p class="modal-message">You've cleared <span id="finalLines">0</span> lines!</p>
+            <p class="modal-score">Final Score: <span id="finalScore">0</span></p>
+            <div class="modal-buttons">
+                <button class="modal-btn restart-btn" id="restartBtn">Play Again</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
