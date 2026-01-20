@@ -3,54 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Block Blast Puzzle Game</title>
+    <title>Block Blast - Neon Glass Edition</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="game-container">
-        <!-- Game Info Section -->
-        <div class="game-info">
-            <div class="info-item">
-                <div class="info-icon icon-star"></div>
-                <span class="info-label">SCORE</span>
-                <span class="info-value" id="score">0</span>
-            </div>
-            <div class="info-item">
-                <div class="info-icon icon-lines"></div>
-                <span class="info-label">LINES</span>
-                <span class="info-value" id="lines">0</span>
-            </div>
-            <div class="info-item">
-                <div class="info-icon icon-rocket"></div>
-                <span class="info-label">LEVEL</span>
-                <span class="info-value" id="level">1</span>
-            </div>
-        </div>
-
-        <!-- Main Game Area -->
-        <div class="main-game-area">
-            <!-- Game Board -->
-            <div class="game-board-container">
-                <canvas id="gameBoard" width="360" height="360"></canvas>
-                <div class="hint-overlay" id="hintOverlay"></div>
-                <!-- Game Controls -->
-                <div class="game-controls">
-                    <button class="control-btn hint-btn" id="hintBtn">
-                        <span>Hint</span>
-                    </button>
-                    <button class="control-btn pause-btn" id="pauseBtn">
-                        <span id="pauseBtnText">Pause</span>
-                    </button>
+    <div class="appRoot">
+        <!-- Background ornaments -->
+        <div class="bgOrb orb1"></div>
+        <div class="bgOrb orb2"></div>
+        <div class="bgOrb orb3"></div>
+        <div class="bgStars"></div>
+        
+        <div class="shell">
+            <!-- Header -->
+            <header class="topBar">
+                <div class="brand">
+                    <div class="brandMark"></div>
+                    <div>
+                        <div class="brandName">BLOCK BLAST</div>
+                        <div class="brandSub">Neon Glass Edition</div>
+                    </div>
                 </div>
-            </div>
-
-            <!-- Next Shapes Container -->
-            <div class="shapes-container">
-                <div class="shapes-label">NEXT BLOCKS</div>
-                <div class="shapes-list" id="shapesList">
-                    <!-- Shapes will be dynamically generated -->
+                
+                <div class="statsRow">
+                    <div class="statCard" style="--accent: #F6C85F;">
+                        <div class="statTop">
+                            <span class="statIcon">★</span>
+                            <span class="statLabel">SCORE</span>
+                        </div>
+                        <div class="statValue" id="score">0</div>
+                    </div>
+                    <div class="statCard" style="--accent: #3EDAD8;">
+                        <div class="statTop">
+                            <span class="statIcon">▦</span>
+                            <span class="statLabel">LINES</span>
+                        </div>
+                        <div class="statValue" id="lines">0</div>
+                    </div>
+                    <div class="statCard" style="--accent: #4AA3FF;">
+                        <div class="statTop">
+                            <span class="statIcon">↟</span>
+                            <span class="statLabel">LEVEL</span>
+                        </div>
+                        <div class="statValue" id="level">1</div>
+                    </div>
                 </div>
-            </div>
+            </header>
+            
+            <!-- Main Game Area -->
+            <main class="mainGrid">
+                <!-- Board -->
+                <div class="boardWrap">
+                    <div class="boardHeader">
+                        <div class="boardTitle">BOARD</div>
+                        <div class="boardMeta">10×10</div>
+                    </div>
+                    
+                    <div class="boardGrid" role="grid" aria-label="Game board">
+                        <canvas id="gameBoard" width="360" height="360"></canvas>
+                    </div>
+                    
+                    <div class="boardFooter">
+                        <button class="glassBtn" id="hintBtn">Hint</button>
+                        <button class="glassBtn secondary" id="pauseBtn"><span id="pauseBtnText">Pause</span></button>
+                    </div>
+                </div>
+                
+                <!-- Next Blocks -->
+                <div class="sideCard">
+                    <div class="sideHeader">
+                        <div class="sideTitle">NEXT BLOCKS</div>
+                        <div class="sideSub">Preview</div>
+                    </div>
+                    
+                    <div class="nextList" id="shapesList">
+                        <!-- Shapes will be dynamically generated -->
+                    </div>
+                    
+                    <div class="sideHint">
+                        Tip: aim to complete full rows/columns for bonus clears.
+                    </div>
+                </div>
+            </main>
+            
+            <!-- Footer -->
+            <footer class="footerBar">
+                <div class="footerPill">Daily Challenge</div>
+                <div class="footerPill muted">Settings</div>
+                <div class="footerPill muted">Shop</div>
+            </footer>
         </div>
     </div>
 

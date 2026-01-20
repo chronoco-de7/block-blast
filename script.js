@@ -128,7 +128,7 @@ function renderShapes() {
     
     gameState.shapes.forEach((shape, index) => {
         const shapeItem = document.createElement('div');
-        shapeItem.className = 'shape-item';
+        shapeItem.className = 'miniFrame';
         shapeItem.dataset.shapeIndex = index;
         
         const canvas = document.createElement('canvas');
@@ -164,6 +164,10 @@ function createDragGhost(shape) {
         dragGhost.remove();
     }
     
+    // Calculate actual cell size based on displayed canvas size
+    const rect = boardCanvas.getBoundingClientRect();
+    const actualCellSize = rect.width / BOARD_SIZE;
+    
     dragGhost = document.createElement('div');
     dragGhost.className = 'drag-ghost';
     dragGhost.style.display = 'block';
@@ -180,16 +184,16 @@ function createDragGhost(shape) {
     const size = Math.max(cols, rows);
     const pivot = getShapePivot(shape);
     
-    canvas.width = size * CELL_SIZE;
-    canvas.height = size * CELL_SIZE;
+    canvas.width = size * actualCellSize;
+    canvas.height = size * actualCellSize;
     
     const ctx = canvas.getContext('2d');
     // Clear canvas and draw shape
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawShape(ctx, matrix, shape.color, 0, 0, size * CELL_SIZE);
+    drawShape(ctx, matrix, shape.color, 0, 0, size * actualCellSize);
     
     // Draw pivot marker (small circle at pivot cell center)
-    const cellSize = size * CELL_SIZE / Math.max(rows, cols);
+    const cellSize = size * actualCellSize / Math.max(rows, cols);
     const pivotX = pivot.col * cellSize + cellSize / 2;
     const pivotY = pivot.row * cellSize + cellSize / 2;
     
@@ -249,11 +253,14 @@ function updateDragGhost(x, y) {
     const pivot = getShapePivot(shape);
     const rect = boardCanvas.getBoundingClientRect();
     
+    // Calculate actual cell size based on displayed canvas size
+    const actualCellSize = rect.width / BOARD_SIZE;
+    
     // Calculate which cell the mouse is over
     const mouseX = x - rect.left;
     const mouseY = y - rect.top;
-    const cellX = Math.floor(mouseX / CELL_SIZE);
-    const cellY = Math.floor(mouseY / CELL_SIZE);
+    const cellX = Math.floor(mouseX / actualCellSize);
+    const cellY = Math.floor(mouseY / actualCellSize);
     
     // Calculate where to place the shape (pivot cell aligns with mouse cell)
     const placeX = cellX - pivot.col;
@@ -261,8 +268,8 @@ function updateDragGhost(x, y) {
     
     // Calculate the pixel position for the ghost
     // The ghost should show the shape at (placeX, placeY) position
-    const ghostX = rect.left + placeX * CELL_SIZE;
-    const ghostY = rect.top + placeY * CELL_SIZE;
+    const ghostX = rect.left + placeX * actualCellSize;
+    const ghostY = rect.top + placeY * actualCellSize;
     
     dragGhost.style.display = 'block';
     dragGhost.style.left = ghostX + 'px';
@@ -313,10 +320,11 @@ function setupDragAndDrop(shapeItem, shape, shapeIndex) {
         
         // Update board to show placement preview
         const rect = boardCanvas.getBoundingClientRect();
+        const actualCellSize = rect.width / BOARD_SIZE;
         const mouseX = e.clientX - rect.left;
         const mouseY = e.clientY - rect.top;
-        const x = Math.floor(mouseX / CELL_SIZE);
-        const y = Math.floor(mouseY / CELL_SIZE);
+        const x = Math.floor(mouseX / actualCellSize);
+        const y = Math.floor(mouseY / actualCellSize);
         
         // Calculate placement position based on pivot
         const shape = gameState.dragging.shape;
@@ -338,10 +346,11 @@ function setupDragAndDrop(shapeItem, shape, shapeIndex) {
         if (!gameState.dragging) return;
         
         const rect = boardCanvas.getBoundingClientRect();
+        const actualCellSize = rect.width / BOARD_SIZE;
         const mouseX = e.clientX - rect.left;
         const mouseY = e.clientY - rect.top;
-        const cellX = Math.floor(mouseX / CELL_SIZE);
-        const cellY = Math.floor(mouseY / CELL_SIZE);
+        const cellX = Math.floor(mouseX / actualCellSize);
+        const cellY = Math.floor(mouseY / actualCellSize);
         
         // Calculate placement position based on pivot
         const shape = gameState.dragging.shape;
@@ -502,7 +511,7 @@ function clearLines() {
     gameState.clearingLines.animationTime = 0;
     
     // Add shake class to board
-    const boardContainer = document.querySelector('.game-board-container');
+    const boardContainer = document.querySelector('.boardWrap');
     boardContainer.classList.add('shake');
     
     // Animate and clear after shake effect
@@ -592,7 +601,7 @@ function restartGame() {
     removeDragGhost();
     
     // Remove shake class if present
-    const boardContainer = document.querySelector('.game-board-container');
+    const boardContainer = document.querySelector('.boardWrap');
     if (boardContainer) {
         boardContainer.classList.remove('shake');
     }
@@ -911,20 +920,16 @@ function drawHintPosition() {
         }
     }
     
-    // No valid position found, show overlay anyway
-    document.getElementById('hintOverlay').classList.add('active');
 }
 
 // Show hint
 function showHint() {
     gameState.hintActive = true;
-    document.getElementById('hintOverlay').classList.add('active');
     render();
 }
 
 // Hide hint
 function hideHint() {
-    document.getElementById('hintOverlay').classList.remove('active');
     gameState.hintActive = false;
     if (boardCtx) {
         render();
