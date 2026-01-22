@@ -28,21 +28,37 @@
                 <div class="statsRow">
                     <div class="statCard" style="--accent: #F6C85F;">
                         <div class="statTop">
-                            <span class="statIcon">★</span>
+                            <span class="statIcon">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
                             <span class="statLabel">SCORE</span>
                         </div>
                         <div class="statValue" id="score">0</div>
                     </div>
                     <div class="statCard" style="--accent: #3EDAD8;">
                         <div class="statTop">
-                            <span class="statIcon">▦</span>
+                            <span class="statIcon">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="3" y="3" width="7" height="7" fill="currentColor" stroke="currentColor" stroke-width="1.5" rx="1"/>
+                                    <rect x="3" y="14" width="7" height="7" fill="currentColor" stroke="currentColor" stroke-width="1.5" rx="1"/>
+                                    <rect x="14" y="3" width="7" height="7" fill="currentColor" stroke="currentColor" stroke-width="1.5" rx="1"/>
+                                    <rect x="14" y="14" width="7" height="7" fill="currentColor" stroke="currentColor" stroke-width="1.5" rx="1"/>
+                                </svg>
+                            </span>
                             <span class="statLabel">LINES</span>
                         </div>
                         <div class="statValue" id="lines">0</div>
                     </div>
                     <div class="statCard" style="--accent: #4AA3FF;">
                         <div class="statTop">
-                            <span class="statIcon">↟</span>
+                            <span class="statIcon">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 2L4 7V12C4 16.55 7.84 20.74 12 22C16.16 20.74 20 16.55 20 12V7L12 2Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M9 12L11 14L15 10" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
                             <span class="statLabel">LEVEL</span>
                         </div>
                         <div class="statValue" id="level">1</div>
@@ -60,12 +76,27 @@
                     </div>
                     
                     <div class="boardGrid" role="grid" aria-label="Game board">
-                        <canvas id="gameBoard" width="360" height="360"></canvas>
+                        <canvas id="gameBoard"></canvas>
                     </div>
                     
                     <div class="boardFooter">
-                        <button class="glassBtn" id="hintBtn">Hint</button>
-                        <button class="glassBtn secondary" id="pauseBtn"><span id="pauseBtnText">Pause</span></button>
+                        <button class="glassBtn" id="hintBtn">
+                            <svg class="btnIcon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" fill="none"/>
+                                <path d="M12 8V12L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            <span>Hint</span>
+                        </button>
+                        <button class="glassBtn secondary" id="pauseBtn">
+                            <svg class="btnIcon pauseIcon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="7" y="5" width="3" height="14" fill="currentColor" rx="1"/>
+                                <rect x="14" y="5" width="3" height="14" fill="currentColor" rx="1"/>
+                            </svg>
+                            <svg class="btnIcon playIcon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: none;">
+                                <path d="M8 5.14v13.72L19 12L8 5.14z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                            </svg>
+                            <span id="pauseBtnText">Pause</span>
+                        </button>
                     </div>
                 </div>
                 
@@ -102,7 +133,13 @@
             <p class="modal-message">You've cleared <span id="finalLines">0</span> lines!</p>
             <p class="modal-score">Final Score: <span id="finalScore">0</span></p>
             <div class="modal-buttons">
-                <button class="modal-btn restart-btn" id="restartBtn">Play Again</button>
+                <button class="modal-btn restart-btn" id="restartBtn">
+                    <svg class="btnIcon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M21 12C21 16.97 16.97 21 12 21C7.03 21 3 16.97 3 12C3 7.03 7.03 3 12 3C14.39 3 16.58 3.92 18.24 5.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M17 3L18.24 5.5L15.75 6.74" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>Play Again</span>
+                </button>
             </div>
         </div>
     </div>

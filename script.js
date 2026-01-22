@@ -1,6 +1,6 @@
 // Game configuration
 const BOARD_SIZE = 10;
-const CELL_SIZE = 36;
+let CELL_SIZE = 36; // Will be calculated dynamically
 const PREVIEW_CELL_SIZE = 20; // Smaller size for preview shapes
 
 // Game state
@@ -78,6 +78,10 @@ function initGame() {
     boardCanvas = document.getElementById('gameBoard');
     boardCtx = boardCanvas.getContext('2d');
     
+    // Setup responsive canvas
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+    
     // Generate initial shapes
     generateShapes(3);
     
@@ -86,6 +90,57 @@ function initGame() {
     
     // Start game loop
     render();
+}
+
+// Resize canvas to fit container while maintaining aspect ratio
+function resizeCanvas() {
+    if (!boardCanvas) return;
+    
+    const container = boardCanvas.parentElement;
+    if (!container) return;
+    
+    // Wait for container to be laid out
+    const containerRect = container.getBoundingClientRect();
+    if (containerRect.width === 0 || containerRect.height === 0) {
+        // Container not ready, try again on next frame
+        requestAnimationFrame(resizeCanvas);
+        return;
+    }
+    
+    const containerWidth = containerRect.width;
+    const containerHeight = containerRect.height;
+    
+    // Get computed padding
+    const style = window.getComputedStyle(container);
+    const paddingX = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+    const paddingY = parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
+    
+    // Calculate available space
+    const availableWidth = containerWidth - paddingX;
+    const availableHeight = containerHeight - paddingY;
+    const availableSize = Math.min(availableWidth, availableHeight);
+    
+    // Calculate cell size to fit exactly (floor to ensure it fits)
+    CELL_SIZE = Math.floor(availableSize / BOARD_SIZE);
+    
+    // Ensure minimum cell size for playability
+    if (CELL_SIZE < 20) CELL_SIZE = 20;
+    
+    // Calculate exact canvas size (must be multiple of BOARD_SIZE)
+    const canvasSize = CELL_SIZE * BOARD_SIZE;
+    
+    // Set canvas resolution to match exact size (no scaling)
+    boardCanvas.width = canvasSize;
+    boardCanvas.height = canvasSize;
+    
+    // Set display size to match resolution exactly (1:1 pixel ratio)
+    boardCanvas.style.width = canvasSize + 'px';
+    boardCanvas.style.height = canvasSize + 'px';
+    
+    // Re-render with new size
+    if (boardCtx) {
+        render();
+    }
 }
 
 // Generate random shapes
@@ -104,19 +159,37 @@ function generateShapes(count) {
 
 // Generate random color with gradient
 function generateColor() {
-    const hues = [
-        { h: 200, s: 70, l: 50 }, // Blue
-        { h: 280, s: 70, l: 50 }, // Purple
-        { h: 320, s: 70, l: 50 }, // Pink
-        { h: 160, s: 70, l: 50 }, // Cyan
-        { h: 40, s: 70, l: 50 },  // Orange
-        { h: 120, s: 70, l: 50 }  // Green
+    const colorPalettes = [
+        // Vibrant Blue
+        { h: 210, s: 85, l: 55 },
+        // Rich Purple
+        { h: 270, s: 80, l: 60 },
+        // Bright Pink
+        { h: 330, s: 75, l: 65 },
+        // Cyan/Turquoise
+        { h: 180, s: 80, l: 55 },
+        // Warm Orange
+        { h: 25, s: 90, l: 60 },
+        // Fresh Green
+        { h: 140, s: 75, l: 55 },
+        // Coral
+        { h: 15, s: 85, l: 65 },
+        // Lavender
+        { h: 260, s: 70, l: 70 },
+        // Teal
+        { h: 195, s: 85, l: 50 },
+        // Golden Yellow
+        { h: 45, s: 90, l: 60 },
+        // Magenta
+        { h: 300, s: 80, l: 60 },
+        // Emerald
+        { h: 150, s: 80, l: 50 }
     ];
-    const hue = hues[Math.floor(Math.random() * hues.length)];
+    const color = colorPalettes[Math.floor(Math.random() * colorPalettes.length)];
     return {
-        primary: `hsl(${hue.h}, ${hue.s}%, ${hue.l}%)`,
-        secondary: `hsl(${hue.h}, ${hue.s}%, ${hue.l - 10}%)`,
-        tertiary: `hsl(${hue.h}, ${hue.s}%, ${hue.l - 20}%)`
+        primary: `hsl(${color.h}, ${color.s}%, ${color.l}%)`,
+        secondary: `hsl(${color.h}, ${color.s}%, ${color.l - 8}%)`,
+        tertiary: `hsl(${color.h}, ${color.s}%, ${color.l - 15}%)`
     };
 }
 
@@ -955,14 +1028,19 @@ function setupEventListeners() {
         if (gameState.isGameOver) return;
         
         gameState.isPaused = !gameState.isPaused;
+        const pauseBtn = document.getElementById('pauseBtn');
         const pauseBtnText = document.getElementById('pauseBtnText');
-        const pauseBtnIcon = document.getElementById('pauseBtn').querySelector('.btn-icon');
-        pauseBtnText.textContent = gameState.isPaused ? 'Resume' : 'Pause';
+        const pauseIcon = pauseBtn.querySelector('.pauseIcon');
+        const playIcon = pauseBtn.querySelector('.playIcon');
         
         if (gameState.isPaused) {
-            pauseBtnIcon.className = 'btn-icon icon-play';
+            pauseBtnText.textContent = 'Resume';
+            pauseIcon.style.display = 'none';
+            playIcon.style.display = 'block';
         } else {
-            pauseBtnIcon.className = 'btn-icon icon-pause';
+            pauseBtnText.textContent = 'Pause';
+            pauseIcon.style.display = 'block';
+            playIcon.style.display = 'none';
         }
     });
     
