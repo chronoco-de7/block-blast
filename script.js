@@ -663,6 +663,12 @@ function checkGameOver() {
 
 // Show game over modal
 function showGameOverModal() {
+    // Save score
+    saveScore(gameState.score, gameState.lines, gameState.level);
+    
+    // Update daily challenge
+    updateDailyChallenge(gameState.score, gameState.lines, gameState.level);
+    
     document.getElementById('finalScore').textContent = gameState.score;
     document.getElementById('finalLines').textContent = gameState.lines;
     document.getElementById('gameOverModal').classList.add('show');
@@ -1064,6 +1070,409 @@ function setupEventListeners() {
     document.addEventListener('drop', (e) => e.preventDefault());
 }
 
+// ==================== Navigation & Pages ====================
+function navigateToPage(pageName) {
+    // Hide all pages
+    document.querySelectorAll('.page').forEach(page => {
+        page.classList.remove('active');
+    });
+    
+    // Show selected page
+    const pageMap = {
+        'game': 'gamePage',
+        'scores': 'scoresPage',
+        'challenge': 'challengePage',
+        'settings': 'settingsPage'
+    };
+    
+    const pageId = pageMap[pageName];
+    if (pageId) {
+        document.getElementById(pageId).classList.add('active');
+        
+        // Load page-specific data
+        if (pageName === 'scores') {
+            loadScoresPage();
+        } else if (pageName === 'challenge') {
+            loadChallengePage();
+        } else if (pageName === 'settings') {
+            loadSettingsPage();
+        }
+    }
+}
+
+// ==================== LocalStorage Management ====================
+function getStoredData(key, defaultValue = null) {
+    try {
+        const item = localStorage.getItem(key);
+        return item ? JSON.parse(item) : defaultValue;
+    } catch (e) {
+        return defaultValue;
+    }
+}
+
+function setStoredData(key, value) {
+    try {
+        localStorage.setItem(key, JSON.stringify(value));
+    } catch (e) {
+        console.error('Error saving to localStorage:', e);
+    }
+}
+
+// ==================== Score Management ====================
+function saveScore(score, lines, level) {
+    const scores = getStoredData('gameScores', []);
+    const gameData = {
+        score,
+        lines,
+        level,
+        date: new Date().toISOString(),
+        timestamp: Date.now()
+    };
+    
+    scores.push(gameData);
+    
+    // Keep only last 100 scores
+    if (scores.length > 100) {
+        scores.shift();
+    }
+    
+    // Sort by score descending
+    scores.sort((a, b) => b.score - a.score);
+    
+    setStoredData('gameScores', scores);
+    return gameData;
+}
+
+function getScores() {
+    return getStoredData('gameScores', []);
+}
+
+function getBestScore() {
+    const scores = getScores();
+    return scores.length > 0 ? scores[0] : null;
+}
+
+function getStatistics() {
+    const scores = getScores();
+    if (scores.length === 0) {
+        return {
+            totalGames: 0,
+            totalLines: 0,
+            bestLevel: 0,
+            avgScore: 0
+        };
+    }
+    
+    const totalGames = scores.length;
+    const totalLines = scores.reduce((sum, game) => sum + game.lines, 0);
+    const bestLevel = Math.max(...scores.map(game => game.level));
+    const avgScore = Math.round(scores.reduce((sum, game) => sum + game.score, 0) / totalGames);
+    
+    return { totalGames, totalLines, bestLevel, avgScore };
+}
+
+function loadScoresPage() {
+    const scores = getScores();
+    const stats = getStatistics();
+    
+    // Update statistics
+    document.getElementById('totalGames').textContent = stats.totalGames;
+    document.getElementById('totalLines').textContent = stats.totalLines;
+    document.getElementById('bestLevel').textContent = stats.bestLevel;
+    document.getElementById('avgScore').textContent = stats.avgScore.toLocaleString();
+    
+    // Best scores (top 10)
+    const bestScoresList = document.getElementById('bestScoresList');
+    bestScoresList.innerHTML = '';
+    
+    const topScores = scores.slice(0, 10);
+    topScores.forEach((game, index) => {
+        const item = document.createElement('div');
+        item.className = 'score-item';
+        item.innerHTML = `
+            <div class="score-item-rank">#${index + 1}</div>
+            <div class="score-item-details">
+                <div class="score-item-value">${game.score.toLocaleString()}</div>
+                <div class="score-item-meta">${game.lines} lines • Level ${game.level} • ${formatDate(game.date)}</div>
+            </div>
+        `;
+        bestScoresList.appendChild(item);
+    });
+    
+    if (topScores.length === 0) {
+        bestScoresList.innerHTML = '<div style="text-align: center; color: rgba(255,255,255,0.6); padding: 20px;">No scores yet. Play a game to get started!</div>';
+    }
+    
+    // Recent scores (last 10)
+    const recentScoresList = document.getElementById('recentScoresList');
+    recentScoresList.innerHTML = '';
+    
+    const recentScores = [...scores].reverse().slice(0, 10);
+    recentScores.forEach((game) => {
+        const item = document.createElement('div');
+        item.className = 'score-item';
+        item.innerHTML = `
+            <div class="score-item-rank">${game.score.toLocaleString()}</div>
+            <div class="score-item-details">
+                <div class="score-item-value">${game.lines} lines cleared</div>
+                <div class="score-item-meta">Level ${game.level} • ${formatDate(game.date)}</div>
+            </div>
+        `;
+        recentScoresList.appendChild(item);
+    });
+    
+    if (recentScores.length === 0) {
+        recentScoresList.innerHTML = '<div style="text-align: center; color: rgba(255,255,255,0.6); padding: 20px;">No recent games.</div>';
+    }
+}
+
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffTime = Math.abs(now - date);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays === 1) return 'Today';
+    if (diffDays === 2) return 'Yesterday';
+    if (diffDays <= 7) return `${diffDays - 1} days ago`;
+    
+    return date.toLocaleDateString();
+}
+
+function clearAllScores() {
+    if (confirm('Are you sure you want to clear all scores? This cannot be undone.')) {
+        localStorage.removeItem('gameScores');
+        loadScoresPage();
+    }
+}
+
+// ==================== Daily Challenge Management ====================
+function getTodayDateString() {
+    const today = new Date();
+    return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+}
+
+function getDailyChallenge() {
+    const today = getTodayDateString();
+    const challenges = getStoredData('dailyChallenges', {});
+    
+    // Check if challenge exists for today
+    if (!challenges[today]) {
+        // Generate new challenge
+        const goals = [
+            { type: 'lines', target: 30, description: 'Clear 30 lines' },
+            { type: 'lines', target: 50, description: 'Clear 50 lines' },
+            { type: 'lines', target: 75, description: 'Clear 75 lines' },
+            { type: 'score', target: 5000, description: 'Score 5,000 points' },
+            { type: 'score', target: 10000, description: 'Score 10,000 points' },
+            { type: 'level', target: 3, description: 'Reach level 3' },
+            { type: 'level', target: 5, description: 'Reach level 5' }
+        ];
+        
+        const goal = goals[Math.floor(Math.random() * goals.length)];
+        
+        challenges[today] = {
+            date: today,
+            goal: goal,
+            progress: 0,
+            completed: false,
+            completedAt: null
+        };
+        
+        setStoredData('dailyChallenges', challenges);
+    }
+    
+    return challenges[today];
+}
+
+function updateDailyChallenge(score, lines, level) {
+    const challenge = getDailyChallenge();
+    if (challenge.completed) return challenge;
+    
+    let progress = 0;
+    if (challenge.goal.type === 'lines') {
+        progress = lines;
+    } else if (challenge.goal.type === 'score') {
+        progress = score;
+    } else if (challenge.goal.type === 'level') {
+        progress = level;
+    }
+    
+    challenge.progress = Math.max(challenge.progress, progress);
+    
+    if (challenge.progress >= challenge.goal.target) {
+        challenge.completed = true;
+        challenge.completedAt = new Date().toISOString();
+        
+        // Award bonus points
+        const bonusPoints = challenge.goal.target * 10;
+        gameState.score += bonusPoints;
+        updateUI();
+    }
+    
+    const challenges = getStoredData('dailyChallenges', {});
+    challenges[challenge.date] = challenge;
+    setStoredData('dailyChallenges', challenges);
+    
+    return challenge;
+}
+
+function loadChallengePage() {
+    const challenge = getDailyChallenge();
+    const today = new Date();
+    const dateStr = today.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    
+    document.getElementById('challengeDate').textContent = dateStr;
+    document.getElementById('challengeGoal').textContent = challenge.goal.description;
+    
+    const progressPercent = Math.min((challenge.progress / challenge.goal.target) * 100, 100);
+    document.getElementById('challengeProgressBar').style.width = progressPercent + '%';
+    document.getElementById('challengeProgressText').textContent = `${challenge.progress} / ${challenge.goal.target} ${challenge.goal.type === 'lines' ? 'lines' : challenge.goal.type === 'score' ? 'points' : 'level'}`;
+    
+    const statusEl = document.getElementById('challengeStatus');
+    if (challenge.completed) {
+        statusEl.textContent = 'Completed! 🎉';
+        statusEl.style.color = 'rgba(0, 240, 255, 1)';
+    } else {
+        statusEl.textContent = 'In Progress';
+        statusEl.style.color = '#fff';
+    }
+    
+    // Load challenge history
+    const challenges = getStoredData('dailyChallenges', {});
+    const historyList = document.getElementById('challengeHistoryList');
+    historyList.innerHTML = '';
+    
+    const historyDates = Object.keys(challenges).sort().reverse().slice(0, 7);
+    historyDates.forEach(dateStr => {
+        const ch = challenges[dateStr];
+        const date = new Date(dateStr);
+        const item = document.createElement('div');
+        item.className = 'history-item';
+        item.innerHTML = `
+            <div class="history-item-date">${date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</div>
+            <div class="history-item-status ${ch.completed ? 'completed' : 'failed'}">
+                ${ch.completed ? '✓ Completed' : 'Incomplete'}
+            </div>
+        `;
+        historyList.appendChild(item);
+    });
+    
+    if (historyDates.length === 0) {
+        historyList.innerHTML = '<div style="text-align: center; color: rgba(255,255,255,0.6); padding: 20px;">No challenge history yet.</div>';
+    }
+}
+
+// ==================== Settings Management ====================
+const defaultSettings = {
+    soundEnabled: false,
+    musicEnabled: false,
+    animationsEnabled: true,
+    autoSaveEnabled: true,
+    difficultyLevel: 'normal'
+};
+
+function getSettings() {
+    return getStoredData('gameSettings', defaultSettings);
+}
+
+function saveSettings() {
+    const difficultyInput = document.getElementById('difficultyLevel');
+    const settings = {
+        soundEnabled: document.getElementById('soundEnabled').checked,
+        musicEnabled: document.getElementById('musicEnabled').checked,
+        animationsEnabled: document.getElementById('animationsEnabled').checked,
+        autoSaveEnabled: document.getElementById('autoSaveEnabled').checked,
+        difficultyLevel: difficultyInput ? difficultyInput.value : 'normal'
+    };
+    
+    setStoredData('gameSettings', settings);
+    applySettings(settings);
+}
+
+function loadSettingsPage() {
+    const settings = getSettings();
+    
+    document.getElementById('soundEnabled').checked = settings.soundEnabled;
+    document.getElementById('musicEnabled').checked = settings.musicEnabled;
+    document.getElementById('animationsEnabled').checked = settings.animationsEnabled;
+    document.getElementById('autoSaveEnabled').checked = settings.autoSaveEnabled;
+    
+    // Update difficulty selector
+    const difficulty = settings.difficultyLevel || 'normal';
+    document.querySelectorAll('.difficulty-option').forEach(option => {
+        option.classList.remove('active');
+        if (option.dataset.difficulty === difficulty) {
+            option.classList.add('active');
+        }
+    });
+    document.getElementById('difficultyLevel').value = difficulty;
+}
+
+function toggleSetting(settingId) {
+    const checkbox = document.getElementById(settingId);
+    if (checkbox) {
+        checkbox.checked = !checkbox.checked;
+        saveSettings();
+    }
+}
+
+function selectDifficulty(level) {
+    // Update visual selection
+    document.querySelectorAll('.difficulty-option').forEach(option => {
+        option.classList.remove('active');
+        if (option.dataset.difficulty === level) {
+            option.classList.add('active');
+        }
+    });
+    
+    // Update hidden input
+    document.getElementById('difficultyLevel').value = level;
+    saveSettings();
+}
+
+function applySettings(settings) {
+    // Apply settings to game
+    // This can be extended to actually affect game behavior
+    if (!settings.animationsEnabled) {
+        // Disable animations if needed
+    }
+}
+
+function resetSettings() {
+    if (confirm('Reset all settings to default values?')) {
+        localStorage.removeItem('gameSettings');
+        loadSettingsPage();
+        saveSettings();
+    }
+}
+
+// Start challenge
+function startChallenge() {
+    navigateToPage('game');
+    if (gameState.isGameOver || gameState.score === 0) {
+        restartGame();
+    }
+}
+
+// Make functions available globally
+window.navigateToPage = navigateToPage;
+window.clearAllScores = clearAllScores;
+window.resetSettings = resetSettings;
+window.saveSettings = saveSettings;
+window.startChallenge = startChallenge;
+window.toggleSetting = toggleSetting;
+window.selectDifficulty = selectDifficulty;
+
 // Initialize when page loads
-window.addEventListener('DOMContentLoaded', initGame);
+window.addEventListener('DOMContentLoaded', () => {
+    initGame();
+    
+    // Load settings on startup
+    const settings = getSettings();
+    applySettings(settings);
+    
+    // Update daily challenge on game start
+    getDailyChallenge();
+});
 
