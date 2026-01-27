@@ -155,6 +155,10 @@ function generateShapes(count) {
         });
     }
     renderShapes();
+    // Check if game is over after generating new shapes
+    if (!gameState.isGameOver) {
+        checkGameOver();
+    }
 }
 
 // Generate random color with gradient
@@ -479,7 +483,7 @@ function placeShape(shapeIndex, x, y) {
     if (!shape) return;
     
     if (!canPlaceShape(shape, x, y)) {
-        checkGameOver();
+        // Don't check game over here - it should be checked proactively
         return;
     }
     
@@ -519,6 +523,11 @@ function placeShape(shapeIndex, x, y) {
         generateShapes(3);
     } else {
         renderShapes();
+        // Check game over after placing shape (if no lines were cleared, check immediately)
+        // If lines were cleared, check will happen in clearLines callback
+        if (linesCleared === 0 && !gameState.isGameOver) {
+            checkGameOver();
+        }
     }
     
     // Hide hint if active
@@ -613,6 +622,11 @@ function clearLines() {
         
         gameState.clearingLines.isAnimating = false;
         render();
+        
+        // Check if game is over after clearing lines (check remaining shapes)
+        if (!gameState.isGameOver && gameState.shapes.length > 0) {
+            checkGameOver();
+        }
     });
     
     return clearedCount;
@@ -644,6 +658,12 @@ function animateClearing(callback) {
 
 // Check if game is over
 function checkGameOver() {
+    // Don't check if game is already over
+    if (gameState.isGameOver) return;
+    
+    // Don't check if there are no shapes (new ones will be generated)
+    if (gameState.shapes.length === 0) return;
+    
     // Check if any shape can be placed anywhere
     for (let shapeIndex = 0; shapeIndex < gameState.shapes.length; shapeIndex++) {
         const shape = gameState.shapes[shapeIndex];
