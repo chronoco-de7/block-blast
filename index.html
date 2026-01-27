@@ -24,7 +24,7 @@
                     <div class="brandMark"></div>
                     <div>
                         <div class="brandName">BLOCK BLAST</div>
-                        <div class="brandSub">Neon Glass Edition</div>
+                        <div class="brandSub">Puzzle Game</div>
                     </div>
                 </div>
                 
@@ -80,6 +80,38 @@
                     
                     <div class="boardGrid" role="grid" aria-label="Game board">
                         <canvas id="gameBoard"></canvas>
+                        <!-- Pause Overlay -->
+                        <div class="pause-overlay" id="pauseOverlay">
+                            <div class="pause-status-box">
+                                <div class="pause-status-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <rect x="7" y="5" width="3" height="14" fill="currentColor" rx="1"/>
+                                        <rect x="14" y="5" width="3" height="14" fill="currentColor" rx="1"/>
+                                    </svg>
+                                </div>
+                                <h3 class="pause-status-title">Game Paused</h3>
+                                <div class="pause-status-stats">
+                                    <div class="pause-stat-item">
+                                        <span class="pause-stat-label">Score</span>
+                                        <span class="pause-stat-value" id="pauseScore">0</span>
+                                    </div>
+                                    <div class="pause-stat-item">
+                                        <span class="pause-stat-label">Lines</span>
+                                        <span class="pause-stat-value" id="pauseLines">0</span>
+                                    </div>
+                                    <div class="pause-stat-item">
+                                        <span class="pause-stat-label">Level</span>
+                                        <span class="pause-stat-value" id="pauseLevel">1</span>
+                                    </div>
+                                </div>
+                                <button class="glassBtn secondary" id="resumeBtn" style="margin-top: 16px;">
+                                    <svg class="btnIcon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M8 5.14v13.72L19 12L8 5.14z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                                    </svg>
+                                    <span>Resume</span>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     
                     <div class="boardFooter">
@@ -122,9 +154,28 @@
             
             <!-- Footer -->
             <footer class="footerBar">
-                <div class="footerPill" onclick="navigateToPage('challenge')">Daily Challenge</div>
-                <div class="footerPill" onclick="navigateToPage('scores')">Scores</div>
-                <div class="footerPill" onclick="navigateToPage('settings')">Settings</div>
+                <div class="footerPill" onclick="navigateToPage('challenge')">
+                    <svg class="footerPill-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M8 2V6M16 2V6M3 10H21M5 4H19C20.1046 4 21 4.89543 21 6V20C21 21.1046 20.1046 22 19 22H5C3.89543 22 3 21.1046 3 20V6C3 4.89543 3.89543 4 5 4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8 14H8.01M12 14H12.01M16 14H16.01M8 18H8.01M12 18H12.01M16 18H16.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    <span>Daily Challenge</span>
+                </div>
+                <div class="footerPill" onclick="navigateToPage('scores')">
+                    <svg class="footerPill-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 3V21H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M7 16L12 11L16 15L21 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M21 3L12 12L8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>Scores</span>
+                </div>
+                <div class="footerPill" onclick="navigateToPage('settings')">
+                    <svg class="footerPill-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+                        <path d="M12 1V3M12 21V23M4.22 4.22L5.64 5.64M18.36 18.36L19.78 19.78M1 12H3M21 12H23M4.22 19.78L5.64 18.36M18.36 5.64L19.78 4.22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    <span>Settings</span>
+                </div>
             </footer>
             </div>
             </div>
@@ -152,7 +203,7 @@
                         
                         <div class="score-section">
                             <h3 class="section-title">Statistics</h3>
-                            <div class="stats-grid">
+                            <div class="stats-list">
                                 <div class="stat-item">
                                     <div class="stat-label">Total Games</div>
                                     <div class="stat-number" id="totalGames">0</div>

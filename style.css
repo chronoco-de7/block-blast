@@ -2,6 +2,7 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  user-select: none;
 }
 
 html, body {
@@ -29,6 +30,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  -webkit-app-region: drag; /* Make background draggable for window movement */
 }
 
 .bgStars,
@@ -59,6 +61,7 @@ body {
     0 0 40px rgba(0, 240, 255, 0.1);
   padding: 20px;
   position: relative;
+  -webkit-app-region: no-drag; /* Prevent dragging from game container */
 }
 
 .game-container::before {
@@ -99,6 +102,7 @@ body {
   flex-shrink: 0;
   flex-wrap: wrap;
   padding: 0;
+  -webkit-app-region: no-drag; /* Top bar is inside game container, so non-draggable */
 }
 
 .brand {
@@ -110,6 +114,7 @@ body {
   backdrop-filter: blur(20px);
   border: 1px solid rgba(0, 240, 255, 0.3);
   border-radius: 6px;
+  -webkit-app-region: no-drag; /* Make brand non-draggable so it's clickable */
 }
 
 .brandMark {
@@ -138,6 +143,7 @@ body {
   flex-shrink: 0;
   justify-content: center;
   flex-wrap: wrap;
+  -webkit-app-region: no-drag; /* Make stats non-draggable so they're clickable */
 }
 
 .statCard {
@@ -222,12 +228,13 @@ body {
   display: flex;
   flex-direction: column;
   flex: 1;
-  max-width: 700px;
+  max-width: 600px;
   max-height: calc(100vh - 180px);
-  min-width: 500px;
-  width: min(700px, calc(100vh - 180px));
+  min-width: 450px;
+  width: min(600px, calc(100vh - 180px));
   aspect-ratio: 1;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  -webkit-app-region: no-drag; /* Make game board non-draggable for gameplay */
 }
 
 .boardWrap::before {
@@ -269,6 +276,13 @@ body {
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  position: relative;
+}
+
+.boardGrid.paused #gameBoard {
+  filter: blur(8px);
+  opacity: 0.5;
+  transition: filter 0.3s ease, opacity 0.3s ease;
 }
 
 #gameBoard {
@@ -279,6 +293,92 @@ body {
   border-radius: 4px;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
+  transition: filter 0.3s ease, opacity 0.3s ease;
+}
+
+/* Pause Overlay */
+.pause-overlay {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  padding: 12px;
+}
+
+.boardGrid.paused .pause-overlay {
+  display: flex;
+}
+
+.pause-status-box {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(30px);
+  border: 1px solid rgba(168, 85, 247, 0.4);
+  border-radius: 12px;
+  padding: 32px 28px;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 0 40px rgba(168, 85, 247, 0.2);
+  text-align: center;
+  min-width: 280px;
+  max-width: 90%;
+}
+
+.pause-status-icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(168, 85, 247, 0.2);
+  border: 2px solid rgba(168, 85, 247, 0.4);
+  border-radius: 12px;
+  color: rgba(168, 85, 247, 1);
+}
+
+.pause-status-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.pause-status-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 24px;
+  letter-spacing: 0.05em;
+}
+
+.pause-status-stats {
+  display: flex;
+  justify-content: space-around;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.pause-stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.pause-stat-label {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.pause-stat-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
 }
 
 .boardWrap.shake {
@@ -299,30 +399,31 @@ body {
 
 .boardFooter {
   display: flex;
-  gap: 12px;
+  gap: 8px;
   justify-content: center;
-  padding: 12px 0 0;
+  padding: 8px 0 0;
   flex-shrink: 0;
 }
 
 .glassBtn {
   flex: 1;
-  max-width: 200px;
-  padding: 12px 20px;
+  max-width: 140px;
+  padding: 8px 14px;
   background: rgba(0, 240, 255, 0.2);
   backdrop-filter: blur(20px);
   color: #fff;
   border: 1px solid rgba(0, 240, 255, 0.4);
   border-radius: 6px;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 11px;
   cursor: pointer;
   transition: all 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 5px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  -webkit-app-region: no-drag; /* Make buttons clickable */
 }
 
 .glassBtn:hover {
@@ -353,8 +454,8 @@ body {
 }
 
 .glassBtn .btnIcon {
-  width: 18px;
-  height: 18px;
+  width: 14px;
+  height: 14px;
   flex-shrink: 0;
 }
 
@@ -370,6 +471,7 @@ body {
   flex-shrink: 0;
   max-height: 800px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  -webkit-app-region: no-drag; /* Make side card non-draggable for shape dragging */
 }
 
 .sideCard::before {
@@ -507,6 +609,18 @@ body {
   transition: all 0.2s;
   color: #fff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  -webkit-app-region: no-drag; /* Make footer pills clickable */
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.footerPill-icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  stroke: currentColor;
+  fill: none;
 }
 
 .footerPill:hover {
@@ -535,10 +649,10 @@ body {
 
 /* Scores Page */
 .scores-content {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  max-height: calc(100vh - 200px);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  max-height: calc(100vh - 280px);
   overflow-y: auto;
   padding: 20px 0;
 }
@@ -565,34 +679,73 @@ body {
   backdrop-filter: blur(20px);
   border: 1px solid rgba(0, 240, 255, 0.2);
   border-radius: 8px;
-  padding: 20px;
+  padding: 18px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: fit-content;
+}
+
+.score-section:nth-child(1) {
+  grid-column: 1 / -1; /* Best Scores spans full width */
+}
+
+.score-section:nth-child(2) {
+  grid-column: 1; /* Statistics on the left */
+}
+
+.score-section:nth-child(3) {
+  grid-column: 2; /* Recent Games on the right */
 }
 
 .section-title {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   color: #fff;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
   letter-spacing: 0.05em;
+  flex-shrink: 0;
 }
 
 .score-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  max-height: 400px;
+}
+
+.score-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.score-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.score-list::-webkit-scrollbar-thumb {
+  background: rgba(128, 128, 128, 0.3);
+  border-radius: 3px;
+}
+
+.score-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(128, 128, 128, 0.5);
 }
 
 .score-item {
   display: flex;
   justify-content: space-between;
-  gap: 16px;
+  gap: 12px;
   align-items: center;
-  padding: 12px 16px;
+  padding: 10px 14px;
   background: rgba(0, 0, 0, 0.2);
   border: 1px solid rgba(120, 180, 255, 0.2);
   border-radius: 6px;
   transition: all 0.2s;
+  flex-shrink: 0;
 }
 
 .score-item:hover {
@@ -614,7 +767,7 @@ body {
 }
 
 .score-item-value {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
   color: #fff;
 }
@@ -626,37 +779,61 @@ body {
 
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.stats-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
 }
 
 .stat-item {
-  padding: 16px;
+  padding: 14px 12px;
   background: rgba(0, 0, 0, 0.2);
   border: 1px solid rgba(120, 180, 255, 0.2);
   border-radius: 6px;
   text-align: center;
 }
 
+.stats-list .stat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: left;
+  padding: 12px 16px;
+}
+
 .stat-label {
-  font-size: 12px;
+  font-size: 11px;
   color: rgba(255, 255, 255, 0.7);
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   font-weight: 600;
 }
 
+.stats-list .stat-label {
+  margin-bottom: 0;
+  font-size: 13px;
+}
+
 .stat-number {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 700;
   color: #fff;
 }
 
+.stats-list .stat-number {
+  font-size: 18px;
+}
+
 /* Challenge Page */
 .challenge-content {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  max-height: calc(100vh - 200px);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  max-height: calc(100vh - 280px);
   overflow-y: auto;
   padding: 20px 0;
 }
@@ -681,7 +858,8 @@ body {
 .challenge-info {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
+  min-width: 0;
 }
 
 .challenge-card {
@@ -689,22 +867,23 @@ body {
   backdrop-filter: blur(20px);
   border: 1px solid rgba(168, 85, 247, 0.3);
   border-radius: 8px;
-  padding: 24px;
+  padding: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  flex: 1;
 }
 
 .challenge-title {
-  font-size: 14px;
+  font-size: 13px;
   color: rgba(255, 255, 255, 0.7);
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   font-weight: 600;
 }
 
 .challenge-goal {
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 700;
   color: #fff;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 .challenge-progress {
@@ -746,11 +925,11 @@ body {
 .challenge-stats {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
+  gap: 12px;
 }
 
 .challenge-stat {
-  padding: 16px;
+  padding: 14px 12px;
   background: rgba(0, 0, 0, 0.2);
   border: 1px solid rgba(168, 85, 247, 0.2);
   border-radius: 6px;
@@ -758,14 +937,14 @@ body {
 }
 
 .challenge-stat-label {
-  font-size: 12px;
+  font-size: 11px;
   color: rgba(255, 255, 255, 0.7);
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   font-weight: 600;
 }
 
 .challenge-stat-value {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
   color: #fff;
 }
@@ -777,22 +956,47 @@ body {
   border-radius: 8px;
   padding: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: fit-content;
 }
 
 .history-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
+  flex: 1;
+  overflow-y: auto;
+  max-height: 500px;
+}
+
+.history-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.history-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.history-list::-webkit-scrollbar-thumb {
+  background: rgba(128, 128, 128, 0.3);
+  border-radius: 3px;
+}
+
+.history-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(128, 128, 128, 0.5);
 }
 
 .history-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 16px;
+  padding: 10px 14px;
   background: rgba(0, 0, 0, 0.2);
   border: 1px solid rgba(120, 180, 255, 0.2);
   border-radius: 6px;
+  flex-shrink: 0;
 }
 
 .history-item-date {
@@ -820,13 +1024,41 @@ body {
   border: 1px solid rgba(255, 0, 0, 0.4);
 }
 
-/* Settings Page - uses same container size as other pages */
+/* Settings Page - wider width */
+.settings-page .shell {
+  max-width: 1600px;
+  width: 100%;
+}
+
+.settings-page .game-container {
+  max-width: calc(1600px + 40px);
+}
+
+/* Scores Page - wider width */
+.scores-page .shell {
+  max-width: 1800px;
+  width: 100%;
+}
+
+.scores-page .game-container {
+  max-width: calc(1800px + 40px);
+}
+
+/* Challenge Page - wider width */
+.challenge-page .shell {
+  max-width: 1800px;
+  width: 100%;
+}
+
+.challenge-page .game-container {
+  max-width: calc(1800px + 40px);
+}
 
 .settings-content {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 20px;
-  max-height: calc(100vh - 200px);
+  max-height: calc(100vh - 280px);
   overflow-y: auto;
   overflow-x: hidden;
   padding: 20px 0;
@@ -855,17 +1087,22 @@ body {
   backdrop-filter: blur(20px);
   border: 1px solid rgba(0, 240, 255, 0.2);
   border-radius: 12px;
-  padding: 24px;
+  padding: 18px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  min-width: 0; /* Allow flex shrinking */
+  min-height: fit-content;
 }
 
 .section-header {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
-  padding-bottom: 16px;
+  gap: 10px;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
 }
 
 .section-icon {
@@ -895,9 +1132,9 @@ body {
 }
 
 .settings-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .setting-card {
@@ -910,6 +1147,7 @@ body {
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.2s;
+  -webkit-app-region: no-drag; /* Make setting cards clickable */
 }
 
 .setting-card:hover {
@@ -961,6 +1199,7 @@ body {
   width: 52px;
   height: 28px;
   flex-shrink: 0;
+  -webkit-app-region: no-drag; /* Make toggle switches clickable */
 }
 
 .toggle-switch input {
@@ -1010,21 +1249,22 @@ body {
 .difficulty-selector {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+  gap: 10px;
 }
 
 .difficulty-option {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  padding: 20px 16px;
+  gap: 6px;
+  padding: 14px 12px;
   background: rgba(0, 0, 0, 0.2);
   border: 2px solid rgba(120, 180, 255, 0.2);
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s ease;
   text-align: center;
+  -webkit-app-region: no-drag; /* Make difficulty options clickable */
 }
 
 .difficulty-option:hover {
@@ -1040,12 +1280,18 @@ body {
 }
 
 .difficulty-icon {
-  font-size: 32px;
+  font-size: 24px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.difficulty-icon {
+  font-size: 28px;
   line-height: 1;
 }
 
 .difficulty-label {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   color: #fff;
 }
@@ -1059,28 +1305,28 @@ body {
 /* Action Buttons */
 .action-buttons {
   display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .action-btn {
-  flex: 1;
-  min-width: 200px;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  padding: 14px 24px;
+  gap: 8px;
+  padding: 12px 20px;
   background: rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(120, 180, 255, 0.3);
   border-radius: 8px;
   color: #fff;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  -webkit-app-region: no-drag; /* Make action buttons clickable */
 }
 
 .action-btn:hover {
@@ -1180,6 +1426,7 @@ body {
   justify-content: center;
   gap: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  -webkit-app-region: no-drag; /* Make modal buttons clickable */
 }
 
 .modal-btn:hover {
@@ -1305,7 +1552,7 @@ body {
   .scores-content,
   .challenge-content,
   .settings-content {
-    max-height: calc(100vh - 180px);
+    max-height: calc(100vh - 220px);
     padding: 12px 0;
   }
   .settings-page .shell {

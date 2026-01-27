@@ -705,6 +705,21 @@ function restartGame() {
         boardContainer.classList.remove('shake');
     }
     
+    // Remove paused state
+    const boardGrid = document.querySelector('.boardGrid');
+    if (boardGrid) {
+        boardGrid.classList.remove('paused');
+    }
+    
+    // Reset pause button
+    const pauseBtn = document.getElementById('pauseBtn');
+    const pauseBtnText = document.getElementById('pauseBtnText');
+    const pauseIcon = pauseBtn.querySelector('.pauseIcon');
+    const playIcon = pauseBtn.querySelector('.playIcon');
+    pauseBtnText.textContent = 'Pause';
+    pauseIcon.style.display = 'block';
+    playIcon.style.display = 'none';
+    
     gameState = {
         board: Array(BOARD_SIZE).fill(null).map(() => Array(BOARD_SIZE).fill(0)),
         shapes: [],
@@ -1035,6 +1050,38 @@ function hideHint() {
     }
 }
 
+// Toggle pause
+function togglePause() {
+    if (gameState.isGameOver) return;
+    
+    gameState.isPaused = !gameState.isPaused;
+    const pauseBtn = document.getElementById('pauseBtn');
+    const pauseBtnText = document.getElementById('pauseBtnText');
+    const pauseIcon = pauseBtn.querySelector('.pauseIcon');
+    const playIcon = pauseBtn.querySelector('.playIcon');
+    const boardGrid = document.querySelector('.boardGrid');
+    
+    if (gameState.isPaused) {
+        pauseBtnText.textContent = 'Resume';
+        pauseIcon.style.display = 'none';
+        playIcon.style.display = 'block';
+        boardGrid.classList.add('paused');
+        updatePauseStatus();
+    } else {
+        pauseBtnText.textContent = 'Pause';
+        pauseIcon.style.display = 'block';
+        playIcon.style.display = 'none';
+        boardGrid.classList.remove('paused');
+    }
+}
+
+// Update pause status display
+function updatePauseStatus() {
+    document.getElementById('pauseScore').textContent = gameState.score;
+    document.getElementById('pauseLines').textContent = gameState.lines;
+    document.getElementById('pauseLevel').textContent = gameState.level;
+}
+
 // Setup event listeners
 function setupEventListeners() {
     // Hint button
@@ -1052,22 +1099,12 @@ function setupEventListeners() {
     // Pause button
     document.getElementById('pauseBtn').addEventListener('click', () => {
         if (gameState.isGameOver) return;
-        
-        gameState.isPaused = !gameState.isPaused;
-        const pauseBtn = document.getElementById('pauseBtn');
-        const pauseBtnText = document.getElementById('pauseBtnText');
-        const pauseIcon = pauseBtn.querySelector('.pauseIcon');
-        const playIcon = pauseBtn.querySelector('.playIcon');
-        
-        if (gameState.isPaused) {
-            pauseBtnText.textContent = 'Resume';
-            pauseIcon.style.display = 'none';
-            playIcon.style.display = 'block';
-        } else {
-            pauseBtnText.textContent = 'Pause';
-            pauseIcon.style.display = 'block';
-            playIcon.style.display = 'none';
-        }
+        togglePause();
+    });
+    
+    // Resume button in overlay
+    document.getElementById('resumeBtn').addEventListener('click', () => {
+        togglePause();
     });
     
     // Restart button

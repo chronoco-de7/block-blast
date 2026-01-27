@@ -45,14 +45,45 @@ A beautiful, modern block puzzle game with stunning neon glass aesthetics and sm
 - Pure **Vanilla JavaScript** - No frameworks, just clean JS
 - **HTML5 Canvas** - For smooth rendering and animations
 - **Modern CSS** - Glassmorphism, gradients, and backdrop filters
+- **Electron** - Desktop app framework
 - **Responsive Design** - Works on all devices
 
 ## Installation & Running 🚀
 
-### Option 1: Direct Open
+### Option 1: Electron Desktop App (Recommended)
+
+1. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+2. **Run the app:**
+   ```bash
+   npm start
+   ```
+
+3. **Run in development mode (with DevTools):**
+   ```bash
+   npm run dev
+   ```
+
+4. **Build distributable apps:**
+   ```bash
+   # Build for current platform
+   npm run build
+
+   # Build for specific platforms
+   npm run build:mac    # macOS
+   npm run build:win    # Windows
+   npm run build:linux  # Linux
+   ```
+
+   Built apps will be in the `dist/` directory.
+
+### Option 2: Direct Open (Web Browser)
 Simply open `index.html` in your web browser.
 
-### Option 2: Local Server
+### Option 3: Local Server
 ```bash
 # Using Python 3
 python3 -m http.server 8000
@@ -70,6 +101,9 @@ block-blast-v2/
 ├── index.html          # Main HTML file
 ├── style.css           # Neon glass styling
 ├── script.js           # Game logic and canvas rendering
+├── main.js             # Electron main process
+├── package.json         # Node.js dependencies and build config
+├── .gitignore          # Git ignore file
 └── README.md           # This file
 ```
 
@@ -106,6 +140,34 @@ const BOARD_SIZE = 10;        // Grid size (10×10)
 const CELL_SIZE = 36;         // Cell size in pixels
 const PREVIEW_CELL_SIZE = 20; // Preview block size
 ```
+
+## Building for Distribution 📦
+
+The app uses `electron-builder` for creating distributable packages. Before building:
+
+1. **Optional: Add app icons**
+   - Create a `build/` directory
+   - Add icons:
+     - `build/icon.png` (512x512) - Linux
+     - `build/icon.icns` - macOS
+     - `build/icon.ico` - Windows
+   - If icons are not provided, default Electron icons will be used
+
+2. **Build commands:**
+   ```bash
+   npm run build        # Build for current platform
+   npm run build:mac    # Build macOS app (.dmg)
+   npm run build:win    # Build Windows installer (.exe)
+   npm run build:linux  # Build Linux AppImage
+   ```
+
+3. **Output:** Built applications will be in the `dist/` directory
+
+## System Requirements 💻
+
+- **Node.js** 16+ (for development)
+- **npm** or **yarn** (for package management)
+- **macOS 10.13+**, **Windows 10+**, or **Linux** (for running Electron app)
 
 ## License 📄
 
