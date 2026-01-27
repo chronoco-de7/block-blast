@@ -17,7 +17,8 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      enableRemoteModule: false
+      enableRemoteModule: false,
+      devTools: false
     },
     titleBarStyle: 'hiddenInset', // Hidden title bar for frameless look
     frame: false, // Frameless window - dragging handled by CSS

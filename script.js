@@ -1176,14 +1176,32 @@ function setStoredData(key, value) {
 }
 
 // ==================== Score Management ====================
+function captureGameScreenshot() {
+    if (!boardCanvas) return null;
+    
+    try {
+        // Capture canvas as data URL
+        const dataURL = boardCanvas.toDataURL('image/png', 0.8); // 80% quality to reduce size
+        return dataURL;
+    } catch (e) {
+        console.error('Error capturing screenshot:', e);
+        return null;
+    }
+}
+
 function saveScore(score, lines, level) {
     const scores = getStoredData('gameScores', []);
+    
+    // Capture screenshot before saving
+    const screenshot = captureGameScreenshot();
+    
     const gameData = {
         score,
         lines,
         level,
         date: new Date().toISOString(),
-        timestamp: Date.now()
+        timestamp: Date.now(),
+        screenshot: screenshot // Add screenshot data URL
     };
     
     scores.push(gameData);
@@ -1246,13 +1264,33 @@ function loadScoresPage() {
     topScores.forEach((game, index) => {
         const item = document.createElement('div');
         item.className = 'score-item';
-        item.innerHTML = `
-            <div class="score-item-rank">#${index + 1}</div>
-            <div class="score-item-details">
-                <div class="score-item-value">${game.score.toLocaleString()}</div>
-                <div class="score-item-meta">${game.lines} lines • Level ${game.level} • ${formatDate(game.date)}</div>
-            </div>
+        
+        const rankDiv = document.createElement('div');
+        rankDiv.className = 'score-item-rank';
+        rankDiv.textContent = `#${index + 1}`;
+        
+        const detailsDiv = document.createElement('div');
+        detailsDiv.className = 'score-item-details';
+        detailsDiv.innerHTML = `
+            <div class="score-item-value">${game.score.toLocaleString()}</div>
+            <div class="score-item-meta">${game.lines} lines • Level ${game.level} • ${formatDate(game.date)}</div>
         `;
+        
+        item.appendChild(rankDiv);
+        item.appendChild(detailsDiv);
+        
+        if (game.screenshot) {
+            const screenshotDiv = document.createElement('div');
+            screenshotDiv.className = 'score-item-screenshot';
+            screenshotDiv.dataset.screenshot = game.screenshot;
+            screenshotDiv.onclick = () => showScreenshot(game.screenshot);
+            const img = document.createElement('img');
+            img.src = game.screenshot;
+            img.alt = 'Game screenshot';
+            screenshotDiv.appendChild(img);
+            item.appendChild(screenshotDiv);
+        }
+        
         bestScoresList.appendChild(item);
     });
     
@@ -1268,13 +1306,33 @@ function loadScoresPage() {
     recentScores.forEach((game) => {
         const item = document.createElement('div');
         item.className = 'score-item';
-        item.innerHTML = `
-            <div class="score-item-rank">${game.score.toLocaleString()}</div>
-            <div class="score-item-details">
-                <div class="score-item-value">${game.lines} lines cleared</div>
-                <div class="score-item-meta">Level ${game.level} • ${formatDate(game.date)}</div>
-            </div>
+        
+        const rankDiv = document.createElement('div');
+        rankDiv.className = 'score-item-rank';
+        rankDiv.textContent = game.score.toLocaleString();
+        
+        const detailsDiv = document.createElement('div');
+        detailsDiv.className = 'score-item-details';
+        detailsDiv.innerHTML = `
+            <div class="score-item-value">${game.lines} lines cleared</div>
+            <div class="score-item-meta">Level ${game.level} • ${formatDate(game.date)}</div>
         `;
+        
+        item.appendChild(rankDiv);
+        item.appendChild(detailsDiv);
+        
+        if (game.screenshot) {
+            const screenshotDiv = document.createElement('div');
+            screenshotDiv.className = 'score-item-screenshot';
+            screenshotDiv.dataset.screenshot = game.screenshot;
+            screenshotDiv.onclick = () => showScreenshot(game.screenshot);
+            const img = document.createElement('img');
+            img.src = game.screenshot;
+            img.alt = 'Game screenshot';
+            screenshotDiv.appendChild(img);
+            item.appendChild(screenshotDiv);
+        }
+        
         recentScoresList.appendChild(item);
     });
     
@@ -1512,6 +1570,30 @@ function startChallenge() {
     }
 }
 
+// Screenshot viewer functions
+function showScreenshot(screenshotData) {
+    const modal = document.getElementById('screenshotModal');
+    const img = document.getElementById('screenshotImage');
+    img.src = screenshotData;
+    modal.classList.add('show');
+}
+
+function closeScreenshotModal() {
+    document.getElementById('screenshotModal').classList.remove('show');
+}
+
+// Close screenshot modal on overlay click
+document.addEventListener('DOMContentLoaded', () => {
+    const screenshotModal = document.getElementById('screenshotModal');
+    if (screenshotModal) {
+        screenshotModal.addEventListener('click', (e) => {
+            if (e.target === screenshotModal) {
+                closeScreenshotModal();
+            }
+        });
+    }
+});
+
 // Make functions available globally
 window.navigateToPage = navigateToPage;
 window.clearAllScores = clearAllScores;
@@ -1520,6 +1602,8 @@ window.saveSettings = saveSettings;
 window.startChallenge = startChallenge;
 window.toggleSetting = toggleSetting;
 window.selectDifficulty = selectDifficulty;
+window.showScreenshot = showScreenshot;
+window.closeScreenshotModal = closeScreenshotModal;
 
 // Initialize when page loads
 window.addEventListener('DOMContentLoaded', () => {
