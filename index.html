@@ -195,14 +195,32 @@
                     
                     <main class="scores-content">
                         <div class="score-section">
-                            <h3 class="section-title">Best Scores</h3>
+                            <div class="section-header">
+                                <div class="section-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M8 21H16M12 3V2M12 3C14 3 15 5 15 7C15 9 14 10 12 11C10 10 9 9 9 7C9 5 10 3 12 3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M6 21V19C6 17.8954 6.89543 17 8 17H16C17.1046 17 18 17.8954 18 19V21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                        <path d="M6 7C6 4.79086 7.79086 3 10 3H14C16.2091 3 18 4.79086 18 7V11C18 13.2091 16.2091 15 14 15H10C7.79086 15 6 13.2091 6 11V7Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                    </svg>
+                                </div>
+                                <h3 class="section-title">Best Scores</h3>
+                            </div>
                             <div class="score-list" id="bestScoresList">
                                 <!-- Will be populated by JS -->
                             </div>
                         </div>
                         
                         <div class="score-section">
-                            <h3 class="section-title">Statistics</h3>
+                            <div class="section-header">
+                                <div class="section-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M3 3V21H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M7 16L12 11L16 15L21 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M18 8V14M15 11V14M12 14V17M9 10V14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </div>
+                                <h3 class="section-title">Statistics</h3>
+                            </div>
                             <div class="stats-list">
                                 <div class="stat-item">
                                     <div class="stat-label">Total Games</div>
@@ -224,7 +242,15 @@
                         </div>
                         
                         <div class="score-section">
-                            <h3 class="section-title">Recent Games</h3>
+                            <div class="section-header">
+                                <div class="section-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/>
+                                        <path d="M12 6V12L16 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                    </svg>
+                                </div>
+                                <h3 class="section-title">Recent Games</h3>
+                            </div>
                             <div class="score-list" id="recentScoresList">
                                 <!-- Will be populated by JS -->
                             </div>
@@ -253,7 +279,15 @@
                     <main class="challenge-content">
                         <div class="challenge-info">
                             <div class="challenge-card">
-                                <div class="challenge-title">Today's Goal</div>
+                                <div class="section-header">
+                                    <div class="section-icon">
+                                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M8 2V6M16 2V6M3 10H21M5 4H19C20.1046 4 21 4.89543 21 6V20C21 21.1046 20.1046 22 19 22H5C3.89543 22 3 21.1046 3 20V6C3 4.89543 3.89543 4 5 4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M8 14H8.01M12 14H12.01M16 14H16.01M8 18H8.01M12 18H12.01M16 18H16.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                        </svg>
+                                    </div>
+                                    <h3 class="section-title">Today's Goal</h3>
+                                </div>
                                 <div class="challenge-goal" id="challengeGoal">Clear 50 lines</div>
                                 <div class="challenge-progress">
                                     <div class="progress-label">Progress</div>
@@ -277,7 +311,15 @@
                         </div>
                         
                         <div class="challenge-history">
-                            <h3 class="section-title">Challenge History</h3>
+                            <div class="section-header">
+                                <div class="section-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M12 8V12L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                        <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/>
+                                    </svg>
+                                </div>
+                                <h3 class="section-title">Challenge History</h3>
+                            </div>
                             <div class="history-list" id="challengeHistoryList">
                                 <!-- Will be populated by JS -->
                             </div>
