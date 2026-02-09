@@ -1,19 +1,25 @@
 /* ========== Glass morphism theme ========== */
 :root {
-  --glass-bg: rgba(30, 80, 160, 0.25);
-  --glass-bg-light: rgba(60, 120, 220, 0.2);
-  --glass-border: rgba(0, 200, 255, 0.5);
-  --glass-border-strong: rgba(0, 230, 255, 0.7);
-  --glass-glow: 0 0 24px rgba(0, 200, 255, 0.25), 0 0 48px rgba(0, 180, 255, 0.15);
-  --glass-glow-strong: 0 0 32px rgba(0, 200, 255, 0.35), 0 0 64px rgba(0, 180, 255, 0.2);
-  --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.15);
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
-  --glass-blur: 20px;
-  --glass-blur-strong: 30px;
-  --accent-cyan: #00e6ff;
+  --glass-bg: rgba(8, 38, 90, 0.55);
+  --glass-bg-light: rgba(12, 70, 150, 0.6);
+  --glass-border: rgba(80, 220, 255, 0.65);
+  --glass-border-strong: rgba(140, 240, 255, 0.9);
+  --glass-glow: 0 0 18px rgba(0, 200, 255, 0.35), 0 0 38px rgba(0, 140, 255, 0.25);
+  --glass-glow-strong: 0 0 28px rgba(0, 220, 255, 0.45), 0 0 64px rgba(0, 160, 255, 0.3);
+  --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  --glass-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+  --glass-blur: 12px;
+  --glass-blur-strong: 20px;
+  --accent-cyan: #6df3ff;
   --accent-blue: #4aa3ff;
-  --text-primary: #fff;
-  --text-muted: rgba(255, 255, 255, 0.75);
+  --text-primary: #f6fbff;
+  --text-muted: rgba(230, 245, 255, 0.75);
+  --gel-top: rgba(190, 245, 255, 0.9);
+  --gel-edge: rgba(110, 225, 255, 0.95);
+  --gel-deep: #0b3b89;
+  --gel-mid: #1e6bd2;
+  --gel-light: #5bb8ff;
+  --gel-shadow: 0 10px 24px rgba(0, 10, 30, 0.45);
 }
 
 * {
@@ -32,11 +38,27 @@ html, body {
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   background: 
-    radial-gradient(circle at 20% 30%, rgba(0, 180, 255, 0.12) 0%, transparent 45%),
-    radial-gradient(circle at 80% 70%, rgba(0, 120, 220, 0.1) 0%, transparent 45%),
-    linear-gradient(135deg, #0a1628 0%, #0d2137 40%, #0f2842 70%, #0a1628 100%);
+    radial-gradient(circle at 18% 22%, rgba(0, 200, 255, 0.18) 0%, transparent 42%),
+    radial-gradient(circle at 82% 70%, rgba(0, 120, 255, 0.14) 0%, transparent 48%),
+    radial-gradient(circle at 50% 120%, rgba(0, 60, 140, 0.5) 0%, transparent 45%),
+    linear-gradient(135deg, #071427 0%, #0b1f3f 45%, #0b244a 70%, #071427 100%);
   color: var(--text-primary);
   position: fixed;
+}
+
+/* Glassmorphism checker backdrop */
+.gel-ui {
+  background-image:
+    linear-gradient(45deg, rgba(10, 28, 60, 0.65) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(10, 28, 60, 0.65) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(10, 28, 60, 0.65) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(10, 28, 60, 0.65) 75%),
+    radial-gradient(circle at 18% 22%, rgba(0, 200, 255, 0.18) 0%, transparent 42%),
+    radial-gradient(circle at 82% 70%, rgba(0, 120, 255, 0.14) 0%, transparent 48%),
+    radial-gradient(circle at 50% 120%, rgba(0, 60, 140, 0.5) 0%, transparent 45%),
+    linear-gradient(135deg, #071427 0%, #0b1f3f 45%, #0b244a 70%, #071427 100%);
+  background-size: 36px 36px, 36px 36px, 36px 36px, 36px 36px, auto, auto, auto, auto;
+  background-position: 0 0, 0 18px, 18px -18px, -18px 0, 0 0, 0 0, 0 0, 0 0;
 }
 
 .appRoot {
@@ -182,7 +204,7 @@ body {
 
 .statCard:before,
 .statCard:after {
-  display: none;
+  display: block;
 }
 
 .statTop {
@@ -263,7 +285,7 @@ body {
 }
 
 .boardWrap::before {
-  display: none;
+  display: block;
 }
 
 .boardHeader {
@@ -459,32 +481,30 @@ body {
 }
 
 .glassBtn:hover {
-  background: rgba(0, 200, 255, 0.25);
-  border-color: var(--glass-border-strong);
-  box-shadow: var(--glass-highlight), 0 0 28px rgba(0, 200, 255, 0.35);
+  filter: brightness(1.05);
 }
 
 .glassBtn:active {
-  background: rgba(0, 200, 255, 0.2);
+  filter: brightness(0.98);
 }
 
 .glassBtn.secondary {
-  background: rgba(60, 100, 200, 0.25);
-  border-color: rgba(0, 180, 255, 0.5);
+  background:
+    radial-gradient(120% 120% at 85% 0%, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.1) 35%, rgba(255, 255, 255, 0) 60%),
+    linear-gradient(180deg, #56a7ff 0%, #2c6cd6 45%, #104391 100%);
+  border-color: rgba(140, 230, 255, 0.9);
 }
 
 .glassBtn.secondary:hover {
-  background: rgba(60, 120, 220, 0.35);
-  border-color: var(--glass-border-strong);
-  box-shadow: var(--glass-highlight), var(--glass-glow);
+  filter: brightness(1.06);
 }
 
 .glassBtn.secondary:active {
-  background: rgba(60, 100, 200, 0.3);
+  filter: brightness(0.98);
 }
 
 .glassBtn::before {
-  display: none;
+  display: block;
 }
 
 .glassBtn .btnIcon {
@@ -510,7 +530,7 @@ body {
 }
 
 .sideCard::before {
-  display: none;
+  display: block;
 }
 
 .sideHeader {
@@ -577,13 +597,12 @@ body {
 }
 
 .miniFrame::before {
-  display: none;
+  display: block;
 }
 
 .miniFrame:hover {
-  border-color: var(--glass-border-strong);
-  background: rgba(0, 60, 120, 0.35);
-  box-shadow: var(--glass-highlight), var(--glass-glow);
+  border-color: rgba(200, 250, 255, 0.95);
+  transform: translateY(-1px);
 }
 
 .miniFrame.dragging {
@@ -662,18 +681,12 @@ body {
 }
 
 .footerPill:hover {
-  background: rgba(0, 200, 255, 0.2);
-  border-color: var(--glass-border-strong);
-  box-shadow: var(--glass-highlight), 0 0 24px rgba(0, 200, 255, 0.3);
+  filter: brightness(1.05);
 }
 
 .footerPill.muted {
   color: var(--text-muted);
   border-color: rgba(255, 255, 255, 0.25);
-}
-
-.footerPill {
-  cursor: pointer;
 }
 
 /* Page Navigation */
@@ -791,9 +804,8 @@ body {
 }
 
 .score-item:hover {
-  background: rgba(0, 60, 120, 0.3);
-  border-color: var(--glass-border-strong);
-  box-shadow: var(--glass-highlight), 0 0 12px rgba(0, 200, 255, 0.2);
+  border-color: rgba(200, 250, 255, 0.95);
+  transform: translateY(-1px);
 }
 
 .score-item-rank {
@@ -1365,11 +1377,6 @@ body {
   flex-shrink: 0;
 }
 
-.difficulty-icon {
-  font-size: 28px;
-  line-height: 1;
-}
-
 .difficulty-label {
   font-size: 14px;
   font-weight: 600;
@@ -1700,19 +1707,6 @@ body {
   .settings-page .shell {
     max-width: calc(100vw - 24px);
   }
-  .settings-grid {
-    grid-template-columns: 1fr;
-  }
-  .difficulty-selector {
-    grid-template-columns: 1fr;
-  }
-  .action-buttons {
-    flex-direction: column;
-  }
-  .action-btn {
-    min-width: 0;
-    width: 100%;
-  }
   .topBar {
     gap: 10px;
   }
@@ -1788,8 +1782,6 @@ body {
   }
   .shell {
     max-height: calc(100vh - 20px);
-  }
-  .shell {
     padding: 10px 16px;
     gap: 10px;
   }
@@ -1827,12 +1819,138 @@ body {
   }
   .shell {
     max-height: calc(100vh - 16px);
+    gap: 8px;
+    padding: 8px 12px;
   }
   .footerBar {
     display: none;
   }
-  .shell {
-    gap: 8px;
-    padding: 8px 12px;
-  }
+}
+
+/* ========== Blue gel UI overrides (scoped) ========== */
+.gel-ui .glassBtn,
+.gel-ui .footerPill,
+.gel-ui .statCard,
+.gel-ui .brand,
+.gel-ui .boardWrap,
+.gel-ui .sideCard,
+.gel-ui .miniFrame,
+.gel-ui .score-section,
+.gel-ui .challenge-card,
+.gel-ui .challenge-history,
+.gel-ui .history-item,
+.gel-ui .score-item,
+.gel-ui .stat-item,
+.gel-ui .challenge-stat,
+.gel-ui .pause-status-box,
+.gel-ui .pause-status-icon {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(140% 140% at 85% 0%, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.08) 35%, rgba(255, 255, 255, 0) 60%),
+    radial-gradient(130% 130% at 0% 100%, rgba(0, 255, 255, 0.22) 0%, rgba(0, 255, 255, 0) 55%),
+    linear-gradient(180deg, rgba(70, 160, 255, 0.55) 0%, rgba(20, 90, 190, 0.6) 45%, rgba(8, 40, 110, 0.7) 100%);
+  border: 1px solid rgba(175, 235, 255, 0.8);
+  box-shadow:
+    0 0 5px rgba(100, 220, 255, 0.18),
+    0 7px 16px rgba(2, 10, 35, 0.32),
+    inset 0 0 12px rgba(40, 140, 255, 0.18);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.gel-ui .glassBtn::before,
+.gel-ui .footerPill::before,
+.gel-ui .statCard::before,
+.gel-ui .brand::before,
+.gel-ui .boardWrap::before,
+.gel-ui .sideCard::before,
+.gel-ui .miniFrame::before,
+.gel-ui .score-section::before,
+.gel-ui .challenge-card::before,
+.gel-ui .challenge-history::before,
+.gel-ui .history-item::before,
+.gel-ui .score-item::before,
+.gel-ui .stat-item::before,
+.gel-ui .challenge-stat::before,
+.gel-ui .pause-status-box::before,
+.gel-ui .pause-status-icon::before {
+  content: '';
+  position: absolute;
+  inset: 2px 2px auto 2px;
+  height: 24%;
+  border-radius: inherit;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0.14) 55%, rgba(255, 255, 255, 0) 100%);
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.gel-ui .glassBtn::after,
+.gel-ui .footerPill::after,
+.gel-ui .statCard::after,
+.gel-ui .brand::after,
+.gel-ui .boardWrap::after,
+.gel-ui .sideCard::after,
+.gel-ui .miniFrame::after,
+.gel-ui .score-section::after,
+.gel-ui .challenge-card::after,
+.gel-ui .challenge-history::after,
+.gel-ui .history-item::after,
+.gel-ui .score-item::after,
+.gel-ui .stat-item::after,
+.gel-ui .challenge-stat::after,
+.gel-ui .pause-status-box::after,
+.gel-ui .pause-status-icon::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow:
+    inset 0 -3px 6px rgba(0, 30, 90, 0.32),
+    inset 0 1px 4px rgba(255, 255, 255, 0.2);
+  pointer-events: none;
+}
+
+.gel-ui .glassBtn:hover,
+.gel-ui .footerPill:hover,
+.gel-ui .miniFrame:hover,
+.gel-ui .score-item:hover {
+  border-color: rgba(210, 245, 255, 0.9);
+  box-shadow: 0 0 6px rgba(120, 235, 255, 0.22), 0 7px 16px rgba(0, 10, 35, 0.28);
+}
+
+.gel-ui .glassBtn:active,
+.gel-ui .footerPill:active {
+  transform: translateY(1px);
+  box-shadow: 0 0 4px rgba(80, 230, 255, 0.18), 0 5px 10px rgba(0, 10, 30, 0.25);
+}
+
+.gel-ui .glassBtn.secondary {
+  background:
+    radial-gradient(120% 120% at 85% 0%, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.1) 35%, rgba(255, 255, 255, 0) 60%),
+    linear-gradient(180deg, rgba(90, 180, 255, 0.6) 0%, rgba(45, 120, 220, 0.65) 45%, rgba(15, 70, 170, 0.75) 100%);
+  border-color: rgba(180, 235, 255, 0.85);
+}
+
+.gel-ui .glassBtn.secondary:hover {
+  border-color: rgba(210, 250, 255, 0.95);
+}
+
+.gel-ui .boardGrid,
+.gel-ui #gameBoard,
+.gel-ui .score-item-screenshot,
+.gel-ui .progress-bar {
+  border: 1px solid rgba(170, 230, 255, 0.55);
+  background:
+    radial-gradient(140% 120% at 50% 0%, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.04) 40%, rgba(255, 255, 255, 0) 70%),
+    linear-gradient(180deg, rgba(18, 84, 165, 0.7) 0%, rgba(8, 46, 110, 0.8) 100%);
+  box-shadow: inset 0 0 10px rgba(0, 40, 90, 0.5), 0 0 4px rgba(90, 210, 255, 0.18);
+}
+
+.gel-ui .sideSub,
+.gel-ui .boardMeta {
+  background:
+    linear-gradient(180deg, rgba(100, 190, 255, 0.7) 0%, rgba(30, 110, 210, 0.85) 100%);
+  border: 1px solid rgba(160, 240, 255, 0.7);
+  color: #f3fbff;
 }
