@@ -1,5 +1,5 @@
 {
-  "name": "block-blast-v2",
+  "name": "block-blast",
   "version": "1.0.0",
   "description": "A beautiful block puzzle game with neon glass aesthetics",
   "main": "main.js",

@@ -1594,6 +1594,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// Close app function
+function closeApp() {
+  // Use Electron API if available
+  if (window.electronAPI && window.electronAPI.closeApp) {
+    window.electronAPI.closeApp();
+  } else if (window.close) {
+    // Fallback: try window.close() for Electron
+    window.close();
+  }
+}
+
 // Make functions available globally
 window.navigateToPage = navigateToPage;
 window.clearAllScores = clearAllScores;
@@ -1604,6 +1615,7 @@ window.toggleSetting = toggleSetting;
 window.selectDifficulty = selectDifficulty;
 window.showScreenshot = showScreenshot;
 window.closeScreenshotModal = closeScreenshotModal;
+window.closeApp = closeApp;
 
 // Initialize when page loads
 window.addEventListener('DOMContentLoaded', () => {

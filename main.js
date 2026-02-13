@@ -22,7 +22,8 @@ function createWindow() {
       nodeIntegration: false,
       contextIsolation: true,
       enableRemoteModule: false,
-      devTools: false
+      devTools: false,
+      preload: path.join(__dirname, 'preload.js')
     },
     titleBarStyle: 'hiddenInset', // Hidden title bar for frameless look
     frame: false, // Frameless window - dragging handled by CSS
@@ -58,6 +59,12 @@ function createWindow() {
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
     require('electron').shell.openExternal(url);
     return { action: 'deny' };
+  });
+
+  // Handle close app IPC
+  const { ipcMain } = require('electron');
+  ipcMain.on('close-app', () => {
+    mainWindow.close();
   });
 }
 

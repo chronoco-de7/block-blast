@@ -144,6 +144,7 @@ body {
   flex-shrink: 0;
   flex-wrap: wrap;
   padding: 0;
+  position: relative;
   -webkit-app-region: no-drag; /* Top bar is inside game container, so non-draggable */
 }
 
@@ -180,6 +181,46 @@ body {
   font-size: 10px;
   color: var(--text-muted);
   margin-top: 1px;
+}
+
+.closeBtn {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  background: rgba(20, 60, 120, 0.4);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid rgba(100, 180, 255, 0.3);
+  border-radius: 8px;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 20, 50, 0.2);
+  -webkit-app-region: no-drag;
+}
+
+.closeBtn:hover {
+  background: rgba(200, 60, 60, 0.5);
+  border-color: rgba(255, 120, 120, 0.5);
+  box-shadow: 0 2px 8px rgba(200, 40, 40, 0.3);
+  transform: translateY(-50%) scale(1.05);
+}
+
+.closeBtn:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.closeBtn svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
 }
 
 .statsRow {
@@ -751,6 +792,71 @@ body {
   min-height: fit-content;
 }
 
+/* Remove glow effects for settings page elements */
+.settings-page .settings-section {
+  box-shadow: 0 2px 8px rgba(0, 20, 50, 0.2) !important;
+}
+
+.settings-page .settings-section::before,
+.settings-page .settings-section::after {
+  display: none !important;
+}
+
+.settings-page .setting-card {
+  box-shadow: 0 2px 8px rgba(0, 20, 50, 0.2) !important;
+}
+
+.settings-page .setting-card::before,
+.settings-page .setting-card::after {
+  display: none !important;
+}
+
+.settings-page .setting-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 20, 50, 0.25) !important;
+}
+
+.settings-page .setting-card-icon {
+  box-shadow: none !important;
+}
+
+.settings-page .difficulty-option {
+  box-shadow: 0 2px 8px rgba(0, 20, 50, 0.2) !important;
+}
+
+.settings-page .difficulty-option::before,
+.settings-page .difficulty-option::after {
+  display: none !important;
+}
+
+.settings-page .difficulty-option:hover {
+  box-shadow: 0 2px 8px rgba(0, 20, 50, 0.25) !important;
+}
+
+.settings-page .difficulty-option.active {
+  box-shadow: 0 2px 8px rgba(0, 20, 50, 0.3) !important;
+}
+
+.settings-page .action-btn {
+  box-shadow: 0 2px 8px rgba(0, 20, 50, 0.2) !important;
+}
+
+.settings-page .action-btn::before,
+.settings-page .action-btn::after {
+  display: none !important;
+}
+
+.settings-page .action-btn:hover {
+  box-shadow: 0 2px 8px rgba(0, 20, 50, 0.25) !important;
+}
+
+.settings-page .action-btn.danger:hover {
+  box-shadow: 0 2px 8px rgba(0, 20, 50, 0.25) !important;
+}
+
+.settings-page .section-icon {
+  box-shadow: none !important;
+}
+
 .score-section:nth-child(1) {
   grid-column: 1 / -1; /* Best Scores spans full width */
 }
@@ -1256,7 +1362,7 @@ body {
   background: rgba(30, 80, 150, 0.45);
   border-color: rgba(120, 200, 255, 0.4);
   transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(0, 20, 50, 0.25), 0 0 4px rgba(100, 200, 255, 0.15);
+  box-shadow: 0 2px 8px rgba(0, 20, 50, 0.25);
 }
 
 .setting-card-icon {
@@ -1374,13 +1480,13 @@ body {
   background: rgba(30, 80, 150, 0.45);
   border-color: rgba(120, 200, 255, 0.4);
   transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(0, 20, 50, 0.25), 0 0 4px rgba(100, 200, 255, 0.15);
+  box-shadow: 0 2px 8px rgba(0, 20, 50, 0.25);
 }
 
 .difficulty-option.active {
   background: rgba(40, 100, 180, 0.5);
   border-color: rgba(120, 200, 255, 0.5);
-  box-shadow: 0 2px 8px rgba(0, 20, 50, 0.3), 0 0 6px rgba(100, 200, 255, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 20, 50, 0.3);
 }
 
 .difficulty-icon {
@@ -1425,7 +1531,7 @@ body {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
-  box-shadow: var(--glass-highlight), var(--glass-glow);
+  box-shadow: 0 2px 8px rgba(0, 20, 50, 0.2);
   -webkit-app-region: no-drag; /* Make action buttons clickable */
 }
 
@@ -1433,7 +1539,7 @@ body {
   background: rgba(0, 200, 255, 0.2);
   border-color: var(--glass-border-strong);
   transform: translateY(-2px);
-  box-shadow: var(--glass-highlight), var(--glass-glow-strong);
+  box-shadow: 0 2px 8px rgba(0, 20, 50, 0.25);
 }
 
 .action-btn.danger {
@@ -1443,7 +1549,7 @@ body {
 .action-btn.danger:hover {
   background: rgba(255, 60, 60, 0.15);
   border-color: rgba(255, 100, 100, 0.7);
-  box-shadow: 0 0 20px rgba(255, 80, 80, 0.25);
+  box-shadow: 0 2px 8px rgba(0, 20, 50, 0.25);
 }
 
 .action-btn svg {
