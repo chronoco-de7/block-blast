@@ -6,13 +6,17 @@ let mainWindow;
 
 function createWindow() {
   // Create the browser window
+  // Recommended size: 920×720px
+  // - Game container: 850×650px
+  // - Padding around container: ~35px on each side
+  // - Provides comfortable viewing area without being too large
   mainWindow = new BrowserWindow({
-    width: 1280,
-    height: 900,
-    minWidth: 1280,
-    minHeight: 900,
-    maxWidth: 1280,
-    maxHeight: 900,
+    width: 920,
+    height: 720,
+    minWidth: 900,
+    minHeight: 700,
+    maxWidth: 950,
+    maxHeight: 750,
     backgroundColor: '#0a1628',
     webPreferences: {
       nodeIntegration: false,

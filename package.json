@@ -3,22 +3,23 @@
   "version": "1.0.0",
   "description": "A beautiful block puzzle game with neon glass aesthetics",
   "main": "main.js",
+  "author": "Vector",
+  "license": "MIT",
   "scripts": {
     "start": "electron .",
     "dev": "electron . --dev",
-    "build": "electron-builder",
-    "build:mac": "electron-builder --mac",
-    "build:win": "electron-builder --win",
-    "build:linux": "electron-builder --linux"
+    "dist": "electron-builder",
+    "dist:mac": "electron-builder --mac",
+    "dist:win": "electron-builder --win",
+    "dist:linux": "electron-builder --linux",
+
+    "portable:win": "electron-builder --win portable",
+    "zip:mac": "electron-builder --mac zip",
+    "appimage:linux": "electron-builder --linux AppImage",
+
+    "unpacked": "electron-builder --dir"
   },
-  "keywords": [
-    "game",
-    "puzzle",
-    "block-blast",
-    "electron"
-  ],
-  "author": "Your Name",
-  "license": "MIT",
+  "keywords": ["game", "puzzle", "block-blast", "electron"],
   "devDependencies": {
     "electron": "^28.0.0",
     "electron-builder": "^24.9.1"
@@ -34,28 +35,29 @@
       "script.js",
       "style.css",
       "main.js",
-      "package.json"
+      "package.json",
+      "build/**/*"
     ],
+    "asar": true,
+    "compression": "maximum",
+    "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
+
     "mac": {
       "category": "public.app-category.games",
-      "icon": "build/icon.icns"
+      "icon": "build/icon.icns",
+      "target": ["zip"],
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false
     },
     "win": {
-      "icon": "build/icon.ico",
-      "target": [
-        "nsis"
-      ]
+      "icon": "icons/icon.ico",
+      "target": ["portable"],
+      "publisherName": "Vector"
     },
     "linux": {
       "category": "Game",
       "icon": "build/icon.png",
-      "target": [
-        "AppImage"
-      ]
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true
+      "target": ["AppImage"]
     }
   }
 }
