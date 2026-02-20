@@ -1,0 +1,133 @@
+<!-- Block Blast - SVG Logo (primary horizontal) -->
+<!-- Save as: block-blast-logo.svg -->
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="320" viewBox="0 0 1200 320" role="img" aria-label="Block Blast logo">
+  <defs>
+    <!-- Cyan gradient for BLOCK -->
+    <linearGradient id="cyanGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2EE6FF"/>
+      <stop offset="60%" stop-color="#3BA8FF"/>
+      <stop offset="100%" stop-color="#2EE6FF"/>
+    </linearGradient>
+
+    <!-- Stroke gradient for icon outline -->
+    <linearGradient id="strokeGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2EE6FF" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#3BA8FF" stop-opacity="0.55"/>
+    </linearGradient>
+
+    <!-- Soft glow filter -->
+    <filter id="softGlow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur"/>
+      <feColorMatrix in="blur" type="matrix"
+        values="1 0 0 0 0
+                0 1 0 0 0
+                0 0 1 0 0
+                0 0 0 0.55 0" result="blurAlpha"/>
+      <feMerge>
+        <feMergeNode in="blurAlpha"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Inner highlight for blocks -->
+    <linearGradient id="blockFill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1D3A5F"/>
+      <stop offset="100%" stop-color="#10253E"/>
+    </linearGradient>
+
+    <linearGradient id="blockCyan" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2EE6FF"/>
+      <stop offset="100%" stop-color="#3BA8FF"/>
+    </linearGradient>
+
+    <linearGradient id="blockGold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FFC83D"/>
+      <stop offset="100%" stop-color="#FFB02E"/>
+    </linearGradient>
+
+    <linearGradient id="blockMagenta" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#E056FD"/>
+      <stop offset="100%" stop-color="#B84BFF"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Icon Mark -->
+  <g transform="translate(80,60)">
+    <!-- Outer rounded square -->
+    <rect x="0" y="0" width="200" height="200" rx="34" fill="url(#blockFill)" stroke="url(#strokeGrad)" stroke-width="3" opacity="0.98"/>
+    <!-- Inner border -->
+    <rect x="14" y="14" width="172" height="172" rx="26" fill="none" stroke="#FFFFFF" stroke-opacity="0.10" stroke-width="2"/>
+
+    <!-- Subtle grid (10x10 feel) -->
+    <g opacity="0.10" stroke="#FFFFFF" stroke-width="1">
+      <!-- vertical -->
+      <path d="M46 18 V182"/>
+      <path d="M78 18 V182"/>
+      <path d="M110 18 V182"/>
+      <path d="M142 18 V182"/>
+      <path d="M174 18 V182"/>
+      <!-- horizontal -->
+      <path d="M18 46 H182"/>
+      <path d="M18 78 H182"/>
+      <path d="M18 110 H182"/>
+      <path d="M18 142 H182"/>
+      <path d="M18 174 H182"/>
+    </g>
+
+    <!-- "Blast" blocks cluster -->
+    <g filter="url(#softGlow)">
+      <!-- Cyan blocks -->
+      <rect x="54" y="60" width="28" height="28" rx="7" fill="url(#blockCyan)"/>
+      <rect x="86" y="60" width="28" height="28" rx="7" fill="url(#blockCyan)"/>
+      <rect x="54" y="92" width="28" height="28" rx="7" fill="url(#blockCyan)"/>
+      <!-- Gold blocks -->
+      <rect x="118" y="92" width="28" height="28" rx="7" fill="url(#blockGold)"/>
+      <rect x="150" y="92" width="28" height="28" rx="7" fill="url(#blockGold)"/>
+      <!-- Magenta accent -->
+      <rect x="118" y="124" width="28" height="28" rx="7" fill="url(#blockMagenta)"/>
+    </g>
+
+    <!-- Small highlight dots (controlled) -->
+    <circle cx="164" cy="44" r="3" fill="#2EE6FF" opacity="0.55"/>
+    <circle cx="38" cy="156" r="2.5" fill="#3BA8FF" opacity="0.35"/>
+  </g>
+
+  <!-- Wordmark -->
+  <g transform="translate(330,95)">
+    <!-- BLOCK -->
+    <text x="0" y="78"
+          font-family="system-ui, -apple-system, Segoe UI, Inter, Roboto, Helvetica, Arial, sans-serif"
+          font-size="92"
+          font-weight="800"
+          letter-spacing="2"
+          fill="url(#cyanGrad)"
+          filter="url(#softGlow)">
+      BLOCK
+    </text>
+
+    <!-- BLAST -->
+    <text x="350" y="78"
+          font-family="system-ui, -apple-system, Segoe UI, Inter, Roboto, Helvetica, Arial, sans-serif"
+          font-size="92"
+          font-weight="800"
+          letter-spacing="2"
+          fill="#EAF3FF"
+          opacity="0.98">
+      BLAST
+    </text>
+
+    <!-- Subtitle -->
+    <text x="4" y="122"
+          font-family="system-ui, -apple-system, Segoe UI, Inter, Roboto, Helvetica, Arial, sans-serif"
+          font-size="36"
+          font-weight="600"
+          letter-spacing="4"
+          fill="#9FB7D3"
+          opacity="0.85">
+      PUZZLE GAME
+    </text>
+
+    <!-- Thin divider line -->
+    <rect x="0" y="140" width="520" height="2" rx="1" fill="#2EE6FF" opacity="0.15"/>
+  </g>
+</svg>

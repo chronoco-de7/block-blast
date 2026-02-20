@@ -183,6 +183,27 @@ body {
   margin-top: 1px;
 }
 
+/* Logo variant for main game header – no container */
+.brand--logo {
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.brandLogo {
+  height: 80px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  filter: drop-shadow(0 0 4px rgba(46, 230, 255, 0.35));
+}
+
 .closeBtn {
   position: absolute;
   top: 50%;
@@ -1257,6 +1278,11 @@ body {
   padding: 0;
 }
 
+/* Game page: center logo with large gap before stats */
+.game-page .topBar {
+  gap: 40px;
+}
+
 /* Ensure all pages use the same footer styling */
 .game-page .footerBar,
 .scores-page .footerBar,
@@ -1787,6 +1813,9 @@ body {
   .brand {
     padding: 8px 12px;
   }
+  .brandLogo {
+    height: 64px;
+  }
   .brandName {
     font-size: 14px;
   }
@@ -1833,6 +1862,9 @@ body {
   }
   .brand {
     padding: 6px 10px;
+  }
+  .brandLogo {
+    height: 52px;
   }
   .brandMark {
     height: 24px;
@@ -1974,6 +2006,19 @@ body {
   box-shadow: 0 2px 8px rgba(0, 20, 50, 0.2);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+}
+
+.gel-ui .brand--logo {
+  background: none;
+  border: none;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.gel-ui .brand--logo::before,
+.gel-ui .brand--logo::after {
+  display: none;
 }
 
 .gel-ui .glassBtn::before,
