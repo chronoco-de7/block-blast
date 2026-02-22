@@ -27,6 +27,11 @@ let gameState = {
 // Drag ghost element
 let dragGhost = null;
 
+// RAF batching for smooth drag updates
+let dragRafId = null;
+let pendingPointerX = 0;
+let pendingPointerY = 0;
+
 // Shape definitions (Tetris-like blocks)
 const SHAPE_DEFINITIONS = [
     // Single block
@@ -245,12 +250,7 @@ function createDragGhost(shape) {
     
     dragGhost = document.createElement('div');
     dragGhost.className = 'drag-ghost';
-    dragGhost.style.display = 'block';
-    dragGhost.style.position = 'fixed';
-    dragGhost.style.pointerEvents = 'none';
-    dragGhost.style.zIndex = '1000';
-    dragGhost.style.opacity = '0.8';
-    dragGhost.style.cursor = 'grabbing';
+    dragGhost.style.cssText = 'display:block;position:fixed;left:0;top:0;pointer-events:none;z-index:1000;opacity:0.8;cursor:grabbing;will-change:transform;';
     
     const canvas = document.createElement('canvas');
     const matrix = shape.matrix;
@@ -320,134 +320,138 @@ function getShapePivot(shape) {
     return { row: closestRow, col: closestCol };
 }
 
-// Update drag ghost position with pivot alignment
-function updateDragGhost(x, y) {
+// Update drag ghost position - smooth pixel movement (no grid snapping)
+// Pivot point stays under the pointer
+function updateDragGhost(clientX, clientY) {
     if (!dragGhost || !gameState.dragging) return;
     
     const shape = gameState.dragging.shape;
     const pivot = getShapePivot(shape);
     const rect = boardCanvas.getBoundingClientRect();
-    
-    // Calculate actual cell size based on displayed canvas size
     const actualCellSize = rect.width / BOARD_SIZE;
     
-    // Calculate which cell the mouse is over
-    const mouseX = x - rect.left;
-    const mouseY = y - rect.top;
-    const cellX = Math.floor(mouseX / actualCellSize);
-    const cellY = Math.floor(mouseY / actualCellSize);
+    // Pivot offset from ghost top-left (in screen pixels)
+    const pivotOffsetX = pivot.col * actualCellSize + actualCellSize / 2;
+    const pivotOffsetY = pivot.row * actualCellSize + actualCellSize / 2;
     
-    // Calculate where to place the shape (pivot cell aligns with mouse cell)
-    const placeX = cellX - pivot.col;
-    const placeY = cellY - pivot.row;
-    
-    // Calculate the pixel position for the ghost
-    // The ghost should show the shape at (placeX, placeY) position
-    const ghostX = rect.left + placeX * actualCellSize;
-    const ghostY = rect.top + placeY * actualCellSize;
+    // Ghost follows pointer smoothly - pivot under cursor
+    const ghostX = clientX - pivotOffsetX;
+    const ghostY = clientY - pivotOffsetY;
     
     dragGhost.style.display = 'block';
-    dragGhost.style.left = ghostX + 'px';
-    dragGhost.style.top = ghostY + 'px';
+    dragGhost.style.transform = `translate(${ghostX}px, ${ghostY}px)`;
 }
 
 // Remove drag ghost
 function removeDragGhost() {
+    if (dragRafId != null) {
+        cancelAnimationFrame(dragRafId);
+        dragRafId = null;
+    }
     if (dragGhost) {
         dragGhost.remove();
         dragGhost = null;
     }
 }
 
-// Setup drag and drop
+// Handle drag move (batched via RAF for smooth 60fps updates)
+function onDragMove(clientX, clientY) {
+    if (!gameState.dragging) return;
+    
+    pendingPointerX = clientX;
+    pendingPointerY = clientY;
+    
+    if (dragRafId == null) {
+        dragRafId = requestAnimationFrame(() => {
+            dragRafId = null;
+            if (!gameState.dragging || !boardCtx) return;
+            
+            updateDragGhost(pendingPointerX, pendingPointerY);
+            
+            const rect = boardCanvas.getBoundingClientRect();
+            const actualCellSize = rect.width / BOARD_SIZE;
+            const mouseX = pendingPointerX - rect.left;
+            const mouseY = pendingPointerY - rect.top;
+            const x = Math.floor(mouseX / actualCellSize);
+            const y = Math.floor(mouseY / actualCellSize);
+            
+            const shape = gameState.dragging.shape;
+            const pivot = getShapePivot(shape);
+            const placeX = x - pivot.col;
+            const placeY = y - pivot.row;
+            
+            render();
+            if (placeX >= 0 && placeY >= 0 && placeX <= BOARD_SIZE - shape.matrix[0].length && placeY <= BOARD_SIZE - shape.matrix.length) {
+                drawPlacementPreview(shape, placeX, placeY);
+            }
+        });
+    }
+}
+
+// Handle drag end (place shape or cancel)
+function onDragEnd(clientX, clientY) {
+    if (!gameState.dragging) return;
+    
+    if (dragRafId != null) {
+        cancelAnimationFrame(dragRafId);
+        dragRafId = null;
+    }
+    
+    const rect = boardCanvas.getBoundingClientRect();
+    const actualCellSize = rect.width / BOARD_SIZE;
+    const mouseX = clientX - rect.left;
+    const mouseY = clientY - rect.top;
+    const cellX = Math.floor(mouseX / actualCellSize);
+    const cellY = Math.floor(mouseY / actualCellSize);
+    
+    const shape = gameState.dragging.shape;
+    const pivot = getShapePivot(shape);
+    const placeX = cellX - pivot.col;
+    const placeY = cellY - pivot.row;
+    
+    if (placeX >= 0 && placeY >= 0 && placeX <= BOARD_SIZE - shape.matrix[0].length && placeY <= BOARD_SIZE - shape.matrix.length) {
+        placeShape(gameState.dragging.shapeIndex, placeX, placeY);
+    }
+    
+    if (gameState.dragging.shapeItem) {
+        gameState.dragging.shapeItem.classList.remove('dragging');
+    }
+    removeDragGhost();
+    gameState.dragging = null;
+    render();
+}
+
+// Setup drag and drop (only mousedown/touchstart per shape; move/end handled globally)
 function setupDragAndDrop(shapeItem, shape, shapeIndex) {
-    shapeItem.addEventListener('mousedown', (e) => {
+    function startDrag(clientX, clientY) {
         if (gameState.isPaused || gameState.isGameOver) return;
         
         gameState.dragging = {
             shape: shape,
             shapeIndex: shapeIndex,
-            startX: e.clientX,
-            startY: e.clientY,
+            startX: clientX,
+            startY: clientY,
             shapeItem: shapeItem
         };
         
         shapeItem.classList.add('dragging');
-        
-        // Create and position drag ghost
         createDragGhost(shape);
-        updateDragGhost(e.clientX, e.clientY);
+        updateDragGhost(clientX, clientY);
         
         const rect = boardCanvas.getBoundingClientRect();
-        gameState.dragOffset = {
-            x: e.clientX - rect.left,
-            y: e.clientY - rect.top
-        };
-        
+        gameState.dragOffset = { x: clientX - rect.left, y: clientY - rect.top };
+    }
+    
+    shapeItem.addEventListener('mousedown', (e) => {
+        startDrag(e.clientX, e.clientY);
         e.preventDefault();
     });
     
-    document.addEventListener('mousemove', (e) => {
-        if (!gameState.dragging) return;
-        
-        // Update drag ghost position with pivot alignment
-        updateDragGhost(e.clientX, e.clientY);
-        
-        // Update board to show placement preview
-        const rect = boardCanvas.getBoundingClientRect();
-        const actualCellSize = rect.width / BOARD_SIZE;
-        const mouseX = e.clientX - rect.left;
-        const mouseY = e.clientY - rect.top;
-        const x = Math.floor(mouseX / actualCellSize);
-        const y = Math.floor(mouseY / actualCellSize);
-        
-        // Calculate placement position based on pivot
-        const shape = gameState.dragging.shape;
-        const pivot = getShapePivot(shape);
-        const placeX = x - pivot.col;
-        const placeY = y - pivot.row;
-        
-        // Redraw board with preview
-        render();
-        
-        if (placeX >= 0 && placeY >= 0 && placeX < BOARD_SIZE && placeY < BOARD_SIZE) {
-            drawPlacementPreview(shape, placeX, placeY);
-        }
-        
+    shapeItem.addEventListener('touchstart', (e) => {
+        if (e.touches.length !== 1) return;
+        startDrag(e.touches[0].clientX, e.touches[0].clientY);
         e.preventDefault();
-    });
-    
-    document.addEventListener('mouseup', (e) => {
-        if (!gameState.dragging) return;
-        
-        const rect = boardCanvas.getBoundingClientRect();
-        const actualCellSize = rect.width / BOARD_SIZE;
-        const mouseX = e.clientX - rect.left;
-        const mouseY = e.clientY - rect.top;
-        const cellX = Math.floor(mouseX / actualCellSize);
-        const cellY = Math.floor(mouseY / actualCellSize);
-        
-        // Calculate placement position based on pivot
-        const shape = gameState.dragging.shape;
-        const pivot = getShapePivot(shape);
-        const placeX = cellX - pivot.col;
-        const placeY = cellY - pivot.row;
-        
-        // Only place if dropped on the board and position is valid
-        if (placeX >= 0 && placeY >= 0 && placeX < BOARD_SIZE && placeY < BOARD_SIZE) {
-            placeShape(gameState.dragging.shapeIndex, placeX, placeY);
-        }
-        
-        // Clean up drag state
-        if (gameState.dragging.shapeItem) {
-            gameState.dragging.shapeItem.classList.remove('dragging');
-        }
-        removeDragGhost();
-        gameState.dragging = null;
-        render();
-        
-        e.preventDefault();
-    });
+    }, { passive: false });
 }
 
 // Check if shape can be placed
@@ -816,21 +820,21 @@ function drawPlacementPreview(shape, x, y) {
                     boardCtx.lineWidth = isPivot ? 3 : 2;
                     boardCtx.strokeRect(cellX + 2, cellY + 2, CELL_SIZE - 4, CELL_SIZE - 4);
                 } else {
-                    // Draw valid placement preview (glow + glossy)
-                    const primaryColor = hslToRgba(shape.color.primary, 0.55);
-                    const secondaryColor = hslToRgba(shape.color.secondary, 0.45);
-                    const tertiaryColor = hslToRgba(shape.color.tertiary, 0.35);
+                    // Draw transparent placement preview on board (grid-snapped)
+                    const primaryColor = hslToRgba(shape.color.primary, 0.35);
+                    const secondaryColor = hslToRgba(shape.color.secondary, 0.28);
+                    const tertiaryColor = hslToRgba(shape.color.tertiary, 0.2);
                     
                     boardCtx.shadowColor = shape.color.primary;
-                    boardCtx.shadowBlur = 6;
+                    boardCtx.shadowBlur = 4;
                     
                     const gradient = boardCtx.createLinearGradient(cellX, cellY, cellX + CELL_SIZE, cellY + CELL_SIZE);
                     gradient.addColorStop(0, primaryColor);
                     gradient.addColorStop(0.4, secondaryColor);
                     gradient.addColorStop(1, tertiaryColor);
                     const highlight = boardCtx.createLinearGradient(cellX, cellY, cellX + CELL_SIZE * 0.6, cellY + CELL_SIZE * 0.6);
-                    highlight.addColorStop(0, 'rgba(255, 255, 255, 0.2)');
-                    highlight.addColorStop(0.4, 'rgba(255, 255, 255, 0.03)');
+                    highlight.addColorStop(0, 'rgba(255, 255, 255, 0.12)');
+                    highlight.addColorStop(0.4, 'rgba(255, 255, 255, 0.02)');
                     highlight.addColorStop(1, 'rgba(255, 255, 255, 0)');
                     
                     boardCtx.fillStyle = gradient;
@@ -839,7 +843,7 @@ function drawPlacementPreview(shape, x, y) {
                     boardCtx.fillRect(cellX + 2, cellY + 2, CELL_SIZE - 4, CELL_SIZE - 4);
                     
                     boardCtx.shadowBlur = 0;
-                    boardCtx.strokeStyle = isPivot ? hslToRgba(shape.color.primary, 0.9) : hslToRgba(shape.color.primary, 0.65);
+                    boardCtx.strokeStyle = isPivot ? hslToRgba(shape.color.primary, 0.7) : hslToRgba(shape.color.primary, 0.45);
                     boardCtx.lineWidth = isPivot ? 3 : 2;
                     boardCtx.strokeRect(cellX + 2, cellY + 2, CELL_SIZE - 4, CELL_SIZE - 4);
                 }
@@ -1160,12 +1164,46 @@ function setupEventListeners() {
     // Restart button
     document.getElementById('restartBtn').addEventListener('click', restartGame);
     
+    // Global drag handlers (single registration for smooth performance)
+    document.addEventListener('mousemove', (e) => {
+        if (gameState.dragging) onDragMove(e.clientX, e.clientY);
+    }, { passive: true });
+    
+    document.addEventListener('mouseup', (e) => {
+        if (gameState.dragging) {
+            onDragEnd(e.clientX, e.clientY);
+            e.preventDefault();
+        }
+    });
+    
+    document.addEventListener('touchmove', (e) => {
+        if (gameState.dragging && e.touches.length === 1) {
+            onDragMove(e.touches[0].clientX, e.touches[0].clientY);
+            e.preventDefault();
+        }
+    }, { passive: false });
+    
+    document.addEventListener('touchend', (e) => {
+        if (gameState.dragging && e.changedTouches.length > 0) {
+            const t = e.changedTouches[0];
+            onDragEnd(t.clientX, t.clientY);
+            e.preventDefault();
+        }
+    }, { passive: false });
+    
+    document.addEventListener('touchcancel', (e) => {
+        if (gameState.dragging) {
+            if (gameState.dragging.shapeItem) gameState.dragging.shapeItem.classList.remove('dragging');
+            removeDragGhost();
+            gameState.dragging = null;
+            render();
+        }
+    });
+    
     // Handle mouse leaving window during drag
     document.addEventListener('mouseleave', () => {
         if (gameState.dragging) {
-            if (gameState.dragging.shapeItem) {
-                gameState.dragging.shapeItem.classList.remove('dragging');
-            }
+            if (gameState.dragging.shapeItem) gameState.dragging.shapeItem.classList.remove('dragging');
             removeDragGhost();
             gameState.dragging = null;
             render();
