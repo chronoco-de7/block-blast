@@ -2,7 +2,7 @@
 
 A beautiful, modern block puzzle game with stunning neon glass aesthetics and smooth animations.
 
-![Block Blast Game](screenshot.png)
+![Block Blast Game](assets/screenshot.png)
 <!-- To add your screenshot: 
 1. Open index.html in your browser (or visit http://localhost:8765)
 2. Play a few moves to make the board look interesting
