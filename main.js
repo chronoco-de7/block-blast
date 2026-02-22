@@ -22,7 +22,7 @@ function createWindow() {
       nodeIntegration: false,
       contextIsolation: true,
       enableRemoteModule: false,
-      devTools: false,
+      devTools: true,
       preload: path.join(__dirname, 'preload.js')
     },
     titleBarStyle: 'hiddenInset', // Hidden title bar for frameless look
