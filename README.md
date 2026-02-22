@@ -70,12 +70,12 @@ A beautiful, modern block puzzle game with stunning neon glass aesthetics and sm
 4. **Build distributable apps:**
    ```bash
    # Build for current platform
-   npm run build
+   npm run dist
 
    # Build for specific platforms
-   npm run build:mac    # macOS
-   npm run build:win    # Windows
-   npm run build:linux  # Linux
+   npm run dist:mac    # macOS
+   npm run dist:win    # Windows
+   npm run dist:linux  # Linux
    ```
 
    Built apps will be in the `dist/` directory.
@@ -98,13 +98,20 @@ npx http-server
 
 ```
 block-blast-v2/
-├── index.html          # Main HTML file
-├── style.css           # Neon glass styling
-├── script.js           # Game logic and canvas rendering
-├── main.js             # Electron main process
-├── package.json         # Node.js dependencies and build config
-├── .gitignore          # Git ignore file
-└── README.md           # This file
+├── index.html              # Main HTML entry
+├── main.js                 # Electron main process
+├── preload.js              # Electron preload script
+├── package.json            # Dependencies and build config
+├── src/
+│   ├── css/
+│   │   └── style.css       # Styles and theming
+│   └── js/
+│       └── script.js      # Game logic and rendering
+├── assets/
+│   └── icons/             # UI icons (SVG)
+├── build/                  # Electron app icons
+├── .gitignore
+└── README.md
 ```
 
 ## Browser Support 🌐
@@ -123,7 +130,7 @@ Requires support for:
 ## Customization 🎨
 
 ### Colors
-The game uses CSS variables defined in `:root`. Edit these in `style.css`:
+The game uses CSS variables defined in `:root`. Edit these in `src/css/style.css`:
 ```css
 :root {
   --bg0: #07162c;
@@ -134,7 +141,7 @@ The game uses CSS variables defined in `:root`. Edit these in `style.css`:
 ```
 
 ### Game Configuration
-Modify constants in `script.js`:
+Modify constants in `src/js/script.js`:
 ```javascript
 const BOARD_SIZE = 10;        // Grid size (10×10)
 const CELL_SIZE = 36;         // Cell size in pixels
@@ -155,10 +162,10 @@ The app uses `electron-builder` for creating distributable packages. Before buil
 
 2. **Build commands:**
    ```bash
-   npm run build        # Build for current platform
-   npm run build:mac    # Build macOS app (.dmg)
-   npm run build:win    # Build Windows installer (.exe)
-   npm run build:linux  # Build Linux AppImage
+   npm run dist        # Build for current platform
+   npm run dist:mac    # Build macOS app (.zip)
+   npm run dist:win    # Build Windows portable (.exe)
+   npm run dist:linux  # Build Linux AppImage
    ```
 
 3. **Output:** Built applications will be in the `dist/` directory

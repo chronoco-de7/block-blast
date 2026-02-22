@@ -12,14 +12,17 @@
     "dist:mac": "electron-builder --mac",
     "dist:win": "electron-builder --win",
     "dist:linux": "electron-builder --linux",
-
     "portable:win": "electron-builder --win portable",
     "zip:mac": "electron-builder --mac zip",
     "appimage:linux": "electron-builder --linux AppImage",
-
     "unpacked": "electron-builder --dir"
   },
-  "keywords": ["game", "puzzle", "block-blast", "electron"],
+  "keywords": [
+    "game",
+    "puzzle",
+    "block-blast",
+    "electron"
+  ],
   "devDependencies": {
     "electron": "^28.0.0",
     "electron-builder": "^24.9.1"
@@ -32,32 +35,38 @@
     },
     "files": [
       "index.html",
-      "script.js",
-      "style.css",
+      "src/**/*",
+      "assets/**/*",
       "main.js",
+      "preload.js",
       "package.json",
       "build/**/*"
     ],
     "asar": true,
     "compression": "maximum",
     "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
-
     "mac": {
       "category": "public.app-category.games",
       "icon": "build/icon.icns",
-      "target": ["zip"],
+      "target": [
+        "zip"
+      ],
       "hardenedRuntime": true,
       "gatekeeperAssess": false
     },
     "win": {
       "icon": "icons/icon.ico",
-      "target": ["portable"],
+      "target": [
+        "portable"
+      ],
       "publisherName": "Vector"
     },
     "linux": {
       "category": "Game",
       "icon": "build/icon.png",
-      "target": ["AppImage"]
+      "target": [
+        "AppImage"
+      ]
     }
   }
 }

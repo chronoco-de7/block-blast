@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96" role="img" aria-label="Scores icon">
+  <defs>
+    <linearGradient id="scGlass" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1C3B63"/>
+      <stop offset="100%" stop-color="#132C4A"/>
+    </linearGradient>
+    <linearGradient id="scStroke" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2EE6FF" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#3BA8FF" stop-opacity="0.45"/>
+    </linearGradient>
+    <linearGradient id="scCyan" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2EE6FF"/>
+      <stop offset="100%" stop-color="#3BA8FF"/>
+    </linearGradient>
+    <filter id="scGlow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="3.5" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect x="12" y="12" width="72" height="72" rx="18" fill="#2EE6FF" opacity="0.10" filter="url(#scGlow)"/>
+  <rect x="12" y="12" width="72" height="72" rx="18" fill="url(#scGlass)" stroke="url(#scStroke)" stroke-width="2"/>
+  <rect x="15.5" y="15.5" width="65" height="65" rx="15" fill="none" stroke="#FFFFFF" stroke-opacity="0.08" stroke-width="1.5"/>
+
+  <!-- Chart: axes + bars -->
+  <g fill="none" stroke="url(#scCyan)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M30 68V34M30 68h38"/>
+    <path d="M38 68V52M46 68V44M54 68V56M62 68V38"/>
+  </g>
+  <!-- Sparkline: smooth curve with dots -->
+  <path d="M38 52q8-10 16-6t12 10" fill="none" stroke="url(#scCyan)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="38" cy="52" r="2" fill="#2EE6FF" opacity="0.95"/>
+  <circle cx="54" cy="46" r="2" fill="#2EE6FF" opacity="0.95"/>
+  <circle cx="66" cy="50" r="2" fill="#2EE6FF" opacity="0.95"/>
+
+  <circle cx="70" cy="26" r="2.2" fill="#2EE6FF" opacity="0.65"/>
+</svg>

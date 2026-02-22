@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Block Blast - Neon Glass Edition</title>
-    <link rel="icon" href="block-blast-logo.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="assets/icons/block-blast-logo.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="src/css/style.css">
 </head>
 <body class="gel-ui">
     <div class="appRoot">
@@ -22,7 +22,7 @@
             <!-- Header -->
             <header class="topBar">
                 <div class="brand brand--logo">
-                    <img src="block-blast-logo.svg" alt="Block Blast" class="brandLogo" />
+                    <img src="assets/icons/block-blast-logo.svg" alt="Block Blast" class="brandLogo" />
                 </div>
                 
                 <div class="statsRow">
@@ -186,13 +186,10 @@
             <!-- Scores Page -->
             <div class="page scores-page" id="scoresPage">
                 <div class="shell">
-                    <header class="topBar">
-                        <div class="brand">
-                            <div class="brandMark"></div>
-                            <div>
-                                <div class="brandName">SCORES</div>
-                                <div class="brandSub">Your Statistics</div>
-                            </div>
+                    <header class="topBar topBar--left">
+                        <div class="brand brand--page">
+                            <img class="brandIcon" src="assets/icons/score-statistics.svg" alt="" width="56" height="56">
+                            <div class="brandName">SCORES</div>
                         </div>
                         <button class="closeBtn" onclick="closeApp()" title="Close">
                             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -202,6 +199,27 @@
                     </header>
                     
                     <main class="scores-content">
+                        <div class="score-section score-stats-bar">
+                            <div class="stats-grid">
+                                <div class="stat-card">
+                                    <div class="stat-card-label">Total Games</div>
+                                    <div class="stat-card-value" id="totalGames">0</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-card-label">Total Lines</div>
+                                    <div class="stat-card-value" id="totalLines">0</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-card-label">Best Level</div>
+                                    <div class="stat-card-value" id="bestLevel">0</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-card-label">Avg Score</div>
+                                    <div class="stat-card-value" id="avgScore">0</div>
+                                </div>
+                            </div>
+                        </div>
+                        
                         <div class="score-section">
                             <div class="section-header">
                                 <div class="section-icon">
@@ -215,37 +233,6 @@
                             </div>
                             <div class="score-list" id="bestScoresList">
                                 <!-- Will be populated by JS -->
-                            </div>
-                        </div>
-                        
-                        <div class="score-section">
-                            <div class="section-header">
-                                <div class="section-icon">
-                                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M3 3V21H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                        <path d="M7 16L12 11L16 15L21 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                        <path d="M18 8V14M15 11V14M12 14V17M9 10V14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                </div>
-                                <h3 class="section-title">Statistics</h3>
-                            </div>
-                            <div class="stats-list">
-                                <div class="stat-item">
-                                    <div class="stat-label">Total Games</div>
-                                    <div class="stat-number" id="totalGames">0</div>
-                                </div>
-                                <div class="stat-item">
-                                    <div class="stat-label">Total Lines</div>
-                                    <div class="stat-number" id="totalLines">0</div>
-                                </div>
-                                <div class="stat-item">
-                                    <div class="stat-label">Best Level</div>
-                                    <div class="stat-number" id="bestLevel">0</div>
-                                </div>
-                                <div class="stat-item">
-                                    <div class="stat-label">Average Score</div>
-                                    <div class="stat-number" id="avgScore">0</div>
-                                </div>
                             </div>
                         </div>
                         
@@ -274,13 +261,10 @@
             <!-- Daily Challenge Page -->
             <div class="page challenge-page" id="challengePage">
                 <div class="shell">
-                    <header class="topBar">
-                        <div class="brand">
-                            <div class="brandMark"></div>
-                            <div>
-                                <div class="brandName">DAILY CHALLENGE</div>
-                                <div class="brandSub" id="challengeDate">Today's Challenge</div>
-                            </div>
+                    <header class="topBar topBar--left">
+                        <div class="brand brand--page">
+                            <img class="brandIcon" src="assets/icons/daily-challenge.svg" alt="" width="56" height="56">
+                            <div class="brandName">DAILY CHALLENGE</div>
                         </div>
                         <button class="closeBtn" onclick="closeApp()" title="Close">
                             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -349,13 +333,10 @@
             <!-- Settings Page -->
             <div class="page settings-page" id="settingsPage">
                 <div class="shell">
-                    <header class="topBar">
-                        <div class="brand">
-                            <div class="brandMark"></div>
-                            <div>
-                                <div class="brandName">SETTINGS</div>
-                                <div class="brandSub">Game Preferences</div>
-                            </div>
+                    <header class="topBar topBar--left">
+                        <div class="brand brand--page">
+                            <img class="brandIcon" src="assets/icons/settings-icon.svg" alt="" width="56" height="56">
+                            <div class="brandName">SETTINGS</div>
                         </div>
                         <button class="closeBtn" onclick="closeApp()" title="Close">
                             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -564,6 +545,6 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script src="src/js/script.js"></script>
 </body>
 </html>
