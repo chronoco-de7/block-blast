@@ -1,24 +1,20 @@
 # Block Blast - Neon Glass Edition 🎮
 
-A beautiful, modern block puzzle game with stunning neon glass aesthetics and smooth animations.
+A beautiful, modern block puzzle game with neon glass aesthetics and smooth animations. Built with vanilla JavaScript and Electron.
 
 ![Block Blast Game](assets/screenshot.png)
-<!-- To add your screenshot: 
-1. Open index.html in your browser (or visit http://localhost:8765)
-2. Play a few moves to make the board look interesting
-3. Take a screenshot (Cmd+Shift+4 on Mac, Win+Shift+S on Windows)
-4. Save it as 'screenshot.png' in this directory
--->
 
 ## Features ✨
 
-- **Stunning Neon Glass UI** - Beautiful glassmorphic design with glowing effects
+- **Neon Glass UI** - Glassmorphic design with glowing effects and gel-style panels
 - **Smooth Animations** - Fluid block placement and line-clearing animations
-- **Drag & Drop Gameplay** - Intuitive drag-and-drop mechanics with visual feedback
-- **Score System** - Track your score, lines cleared, and current level
-- **Hint System** - Get help when you're stuck
-- **Responsive Design** - Works perfectly on desktop, tablet, and mobile devices
-- **No Scrolling** - Optimized fixed layout that fits any screen
+- **Drag & Drop Gameplay** - Intuitive drag-and-drop with visual feedback
+- **Score System** - Track score, lines cleared, and level with stat cards
+- **Scores Page** - Best scores and recent games history
+- **Daily Challenge** - Today's goal with challenge history
+- **Settings** - Audio (sound effects, music), visual options (animations, auto-save), difficulty, data management
+- **Hint System** - Highlight valid placements when stuck
+- **Fixed Layout** - Optimized layout that fits any screen
 
 ## How to Play 🎯
 
@@ -42,11 +38,10 @@ A beautiful, modern block puzzle game with stunning neon glass aesthetics and sm
 
 ## Tech Stack 🛠️
 
-- Pure **Vanilla JavaScript** - No frameworks, just clean JS
-- **HTML5 Canvas** - For smooth rendering and animations
-- **Modern CSS** - Glassmorphism, gradients, and backdrop filters
-- **Electron** - Desktop app framework
-- **Responsive Design** - Works on all devices
+- **Vanilla JavaScript** (ES modules) - Modular game logic
+- **HTML5 Canvas** - Board and block rendering
+- **Modern CSS** - Glassmorphism, gradients, backdrop filters
+- **Electron** - Desktop app (macOS, Windows)
 
 ## Installation & Running 🚀
 
@@ -69,13 +64,12 @@ A beautiful, modern block puzzle game with stunning neon glass aesthetics and sm
 
 4. **Build distributable apps:**
    ```bash
-   # Build for current platform
-   npm run dist
-
-   # Build for specific platforms
-   npm run dist:mac    # macOS
-   npm run dist:win    # Windows
-   npm run dist:linux  # Linux
+   npm run dist          # Build for current platform
+   npm run dist:mac      # macOS (.zip)
+   npm run zip:mac       # macOS zip
+   npm run dist:win      # Windows portable (.exe)
+   npm run portable:win  # Windows portable
+   npm run unpacked      # Output unpacked app (no installer)
    ```
 
    Built apps will be in the `dist/` directory.
@@ -83,15 +77,15 @@ A beautiful, modern block puzzle game with stunning neon glass aesthetics and sm
 ### Option 2: Direct Open (Web Browser)
 Simply open `index.html` in your web browser.
 
-### Option 3: Local Server
+### Option 3: Local Server (for browser)
 ```bash
-# Using Python 3
+# Python 3
 python3 -m http.server 8000
+# Visit http://localhost:8000
 
-# Using Node.js (if you have http-server installed)
+# Node.js
 npx http-server
-
-# Then visit http://localhost:8000
+# Visit http://localhost:8080 (default)
 ```
 
 ## Project Structure 📁
@@ -104,12 +98,27 @@ block-blast-v2/
 ├── package.json            # Dependencies and build config
 ├── src/
 │   ├── css/
-│   │   └── style.css       # Styles and theming
+│   │   └── style.css       # Styles and glass theme
 │   └── js/
-│       └── script.js      # Game logic and rendering
+│       ├── main.js         # App entry, event wiring
+│       ├── game.js         # Game loop, init, pause, restart
+│       ├── board.js        # Board logic and placement
+│       ├── shapes.js       # Shape definitions and preview rendering
+│       ├── shapeUtils.js   # Shape utilities
+│       ├── drag.js         # Drag-and-drop handling
+│       ├── render.js       # Board rendering
+│       ├── draw.js         # Canvas drawing helpers
+│       ├── state.js        # Game state and callbacks
+│       ├── config.js       # Board size, shape definitions
+│       ├── storage.js      # Local storage, scores, settings
+│       ├── pages.js        # Scores, Daily Challenge, Settings pages
+│       └── utils.js        # Shared utilities
 ├── assets/
-│   └── icons/             # UI icons (SVG)
-├── build/                  # Electron app icons
+│   ├── icons/              # block-blast-logo.svg, block-blast-icon.svg, etc.
+│   ├── background.png
+│   ├── background-landscape.png
+│   └── screenshot.png
+├── build/                  # Electron app icons (optional)
 ├── .gitignore
 └── README.md
 ```
@@ -130,22 +139,24 @@ Requires support for:
 ## Customization 🎨
 
 ### Colors
-The game uses CSS variables defined in `:root`. Edit these in `src/css/style.css`:
+The game uses CSS variables in `:root` in `src/css/style.css`:
 ```css
 :root {
-  --bg0: #07162c;
-  --bg1: #0b2142;
-  --bg2: #0e2a57;
-  /* ... more variables */
+  --glass-bg: rgba(6, 28, 65, 0.1);
+  --glass-border: rgba(90, 220, 255, 0.7);
+  --accent-cyan: #6ef5ff;
+  --accent-blue: #4db5ff;
+  --text-primary: #f6fbff;
+  /* ... more glass/gel theme variables */
 }
 ```
 
 ### Game Configuration
-Modify constants in `src/js/script.js`:
+Modify constants in `src/js/config.js`:
 ```javascript
-const BOARD_SIZE = 10;        // Grid size (10×10)
-const CELL_SIZE = 36;         // Cell size in pixels
-const PREVIEW_CELL_SIZE = 20; // Preview block size
+export const BOARD_SIZE = 10;         // Grid size (10×10)
+export const PREVIEW_CELL_SIZE = 20;  // Preview block size
+export const SHAPE_DEFINITIONS = [...]; // Tetris-style block shapes
 ```
 
 ## Building for Distribution 📦
@@ -153,11 +164,10 @@ const PREVIEW_CELL_SIZE = 20; // Preview block size
 The app uses `electron-builder` for creating distributable packages. Before building:
 
 1. **Optional: Add app icons**
-   - Create a `build/` directory
-   - Add icons:
-     - `build/icon.png` (512x512) - Linux
-     - `build/icon.icns` - macOS
-     - `build/icon.ico` - Windows
+   - `build/icon.icns` - macOS
+   - `icons/icon.ico` - Windows
+   - `build/icon.png` (512×512) - Linux (if building for Linux)
+   - Use `assets/icons/block-blast-icon.svg` as a source; convert to required formats
    - If icons are not provided, default Electron icons will be used
 
 2. **Build commands:**
@@ -165,7 +175,8 @@ The app uses `electron-builder` for creating distributable packages. Before buil
    npm run dist        # Build for current platform
    npm run dist:mac    # Build macOS app (.zip)
    npm run dist:win    # Build Windows portable (.exe)
-   npm run dist:linux  # Build Linux AppImage
+   npm run portable:win # Windows portable
+   npm run unpacked    # Unpacked app only
    ```
 
 3. **Output:** Built applications will be in the `dist/` directory
@@ -178,14 +189,12 @@ The app uses `electron-builder` for creating distributable packages. Before buil
 
 ## License 📄
 
-This project is open source and available for personal and educational use.
+MIT © Vector
 
 ## Credits 🙏
 
 Design inspired by modern glassmorphic UI trends and classic block puzzle games.
 
 ---
-
-Made with ❤️ by [Your Name]
 
 Enjoy the game! 🎮✨

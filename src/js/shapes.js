@@ -1,5 +1,6 @@
-import { PREVIEW_CELL_SIZE, SHAPE_DEFINITIONS } from './config.js';
+import { PREVIEW_CELL_SIZE, SHAPE_DEFINITIONS, FIVE_BLOCK_RATE } from './config.js';
 import { gameState, shapeCanvases, setShapeCanvases } from './state.js';
+import { getSettings } from './storage.js';
 import { drawShape } from './draw.js';
 import { setupDragAndDrop } from './drag.js';
 import { callbacks } from './state.js';
@@ -22,11 +23,26 @@ export function generateColor() {
 
 export { getShapePivot } from './shapeUtils.js';
 
+const FIVE_BLOCK_SHAPES = SHAPE_DEFINITIONS.filter(s => s.complexity === 4);
+const NON_FIVE_BLOCK_SHAPES = SHAPE_DEFINITIONS.filter(s => s.complexity < 4);
+
+/** Pick a shape: 5-block rate by difficulty, else random from 1–4 block shapes. */
+function pickShapeForLevel() {
+    const settings = getSettings();
+    const difficulty = settings.difficultyLevel || 'normal';
+    const fiveBlockRate = FIVE_BLOCK_RATE[difficulty] ?? FIVE_BLOCK_RATE.normal;
+
+    if (Math.random() < fiveBlockRate && FIVE_BLOCK_SHAPES.length > 0) {
+        return FIVE_BLOCK_SHAPES[Math.floor(Math.random() * FIVE_BLOCK_SHAPES.length)];
+    }
+    return NON_FIVE_BLOCK_SHAPES[Math.floor(Math.random() * NON_FIVE_BLOCK_SHAPES.length)];
+}
+
 export function generateShapes(count) {
     gameState.shapes = [];
     for (let i = 0; i < count; i++) {
-        const def = SHAPE_DEFINITIONS[Math.floor(Math.random() * SHAPE_DEFINITIONS.length)];
-        gameState.shapes.push({ id: i, matrix: def[0], color: generateColor() });
+        const def = pickShapeForLevel();
+        gameState.shapes.push({ id: i, matrix: def.matrix, color: generateColor() });
     }
     renderShapes();
     if (!gameState.isGameOver) callbacks.checkGameOver?.();

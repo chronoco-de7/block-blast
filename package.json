@@ -1,6 +1,6 @@
 {
   "name": "block-blast",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A beautiful block puzzle game with neon glass aesthetics",
   "main": "main.js",
   "author": "Vector",
