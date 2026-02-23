@@ -69,7 +69,9 @@
 .stat-card,
 .challenge-stat,
 .pause-status-box,
-.pause-status-icon {
+.pause-status-icon,
+.userCombo-trigger,
+.userCombo-dropdown {
   position: relative;
   overflow: hidden;
   background: var(--gel-panel-bg);
@@ -97,7 +99,9 @@
 .stat-card::before,
 .challenge-stat::before,
 .pause-status-box::before,
-.pause-status-icon::before {
+.pause-status-icon::before,
+.userCombo-trigger::before,
+.userCombo-dropdown::before {
   content: '';
   position: absolute;
   inset: 2px 2px auto 2px;
@@ -126,7 +130,9 @@
 .stat-card::after,
 .challenge-stat::after,
 .pause-status-box::after,
-.pause-status-icon::after {
+.pause-status-icon::after,
+.userCombo-trigger::after,
+.userCombo-dropdown::after {
   content: '';
   position: absolute;
   inset: 0;
@@ -423,9 +429,6 @@ body {
   align-items: center;
   gap: 6px;
   padding: 8px 12px;
-  background: var(--card-bg);
-  backdrop-filter: blur(var(--glass-blur));
-  border: 1px solid var(--card-border);
   border-radius: 10px;
   color: var(--text-primary);
   font-size: 14px;
@@ -436,8 +439,8 @@ body {
 }
 
 .userCombo-trigger:hover {
-  background: rgba(0, 200, 255, 0.15);
-  border-color: var(--glass-border-strong);
+  border-color: var(--gel-hover-border);
+  box-shadow: var(--gel-hover-shadow);
 }
 
 .userCombo-name {
@@ -464,11 +467,7 @@ body {
   right: 0;
   width: 100%;
   padding: 6px;
-  background: var(--glass-bg);
-  backdrop-filter: blur(var(--glass-blur-strong));
-  border: 1px solid var(--glass-border-strong);
   border-radius: 10px;
-  box-shadow: var(--glass-shadow), var(--glass-glow);
   display: none;
   z-index: 100;
 }
@@ -493,7 +492,8 @@ body {
 }
 
 .userCombo-signOut:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
 }
 
 /* Game stats grid (2x2) in side panel */
@@ -1249,28 +1249,36 @@ button.footerPill {
   font-size: 18px;
 }
 
-/* Challenge Page */
+/* Challenge Page: top = goal + status + reward, bottom = history */
 .challenge-content {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  max-height: calc(100% - 120px);
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 12px;
   padding: 8px 0;
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
+  overflow: hidden;
 }
 
 .challenge-info {
   display: flex;
+  width: 100%;
+  gap: 10px;
+}
+
+.challenge-history {
+  display: flex;
   flex-direction: column;
-  gap: 8px;
-  min-width: 0;
+  min-height: 0;
+  flex: 1 1 0;
+  overflow: hidden;
+}
+
+.challenge-history .section-header {
+  flex-shrink: 0;
 }
 
 .challenge-card {
   flex: 1;
-  /* Styling inherited from .score-section rule above */
 }
 
 .challenge-goal {
@@ -1319,15 +1327,21 @@ button.footerPill {
 }
 
 .challenge-stats {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  display: flex;
+  width: 240px;
+  flex-direction: column;
   gap: 8px;
 }
 
 .challenge-stat {
-  padding: 14px 12px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
   border-radius: 12px;
   text-align: center;
+  padding: 8px 12px;
 }
 
 .challenge-stat-label {
@@ -1348,8 +1362,8 @@ button.footerPill {
   flex-direction: column;
   gap: 6px;
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
-  max-height: 300px;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
 }
