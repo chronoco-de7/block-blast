@@ -69,6 +69,10 @@ export function setPendingPointer(x, y) {
     pendingPointerY = y;
 }
 
+export function isGameInProgress() {
+    return !gameState.isGameOver && gameState.score > 0;
+}
+
 export function resetGameState() {
     gameState.board = Array(BOARD_SIZE).fill(null).map(() => Array(BOARD_SIZE).fill(0));
     gameState.shapes = [];

@@ -28,6 +28,127 @@
   --scrollbar-thumb: rgba(128, 128, 128, 0.3);
   --scrollbar-thumb-hover: rgba(128, 128, 128, 0.5);
   --settings-flat: 0 2px 8px rgba(0, 20, 50, 0.2);
+  /* Gel panel: unified card/button style */
+  --gel-panel-bg: rgba(20, 60, 120, 0.5);
+  --gel-panel-border: rgba(100, 180, 255, 0.3);
+  --gel-panel-shadow: 0 2px 8px rgba(0, 20, 50, 0.2);
+  --gel-panel-highlight: linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 50%, rgba(255, 255, 255, 0) 100%);
+  --gel-panel-inset: inset 0 -2px 4px rgba(0, 20, 60, 0.15), inset 0 1px 2px rgba(255, 255, 255, 0.08);
+  --gel-surface-bg: radial-gradient(140% 120% at 50% 0%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.03) 40%, rgba(255, 255, 255, 0) 70%),
+    linear-gradient(180deg, rgba(15, 70, 150, 0.6) 0%, rgba(6, 35, 95, 0.75) 100%);
+  --gel-surface-border: 1px solid rgba(120, 230, 255, 0.6);
+  --gel-surface-shadow: inset 0 0 12px rgba(0, 40, 90, 0.4), 0 0 12px rgba(0, 210, 255, 0.25), 0 0 24px rgba(0, 180, 255, 0.12);
+  --gel-badge-bg: linear-gradient(180deg, rgba(100, 190, 255, 0.7) 0%, rgba(30, 110, 210, 0.85) 100%);
+  --gel-badge-border: 1px solid rgba(160, 240, 255, 0.7);
+  --gel-hover-border: rgba(120, 200, 255, 0.4);
+  --gel-hover-shadow: 0 2px 8px rgba(0, 20, 50, 0.25), 0 0 4px rgba(100, 200, 255, 0.15);
+}
+
+/* Reusable glass container – uses gel panel from shared rule below */
+.container,
+.statCard {
+  border-radius: 10px;
+}
+
+/* Gel panel: unified card/button style (position + overflow for ::before/::after) */
+.container,
+.glassBtn,
+.footerPill,
+.statCard,
+.brand,
+.boardWrap,
+.sideCard,
+.nextList,
+.score-section,
+.challenge-card,
+.challenge-history,
+.settings-section,
+.history-item,
+.score-item,
+.stat-item,
+.stat-card,
+.challenge-stat,
+.pause-status-box,
+.pause-status-icon {
+  position: relative;
+  overflow: hidden;
+  background: var(--gel-panel-bg);
+  border: 1px solid var(--gel-panel-border);
+  box-shadow: var(--gel-panel-shadow);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.container::before,
+.glassBtn::before,
+.footerPill::before,
+.statCard::before,
+.brand::before,
+.boardWrap::before,
+.sideCard::before,
+.nextList::before,
+.score-section::before,
+.challenge-card::before,
+.challenge-history::before,
+.settings-section::before,
+.history-item::before,
+.score-item::before,
+.stat-item::before,
+.stat-card::before,
+.challenge-stat::before,
+.pause-status-box::before,
+.pause-status-icon::before {
+  content: '';
+  position: absolute;
+  inset: 2px 2px auto 2px;
+  height: 20%;
+  border-radius: inherit;
+  background: var(--gel-panel-highlight);
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.container::after,
+.glassBtn::after,
+.footerPill::after,
+.statCard::after,
+.brand::after,
+.boardWrap::after,
+.sideCard::after,
+.nextList::after,
+.score-section::after,
+.challenge-card::after,
+.challenge-history::after,
+.settings-section::after,
+.history-item::after,
+.score-item::after,
+.stat-item::after,
+.stat-card::after,
+.challenge-stat::after,
+.pause-status-box::after,
+.pause-status-icon::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: var(--gel-panel-inset);
+  pointer-events: none;
+}
+
+.brand--logo,
+.brand--page {
+  background: none;
+  border: none;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.brand--logo::before,
+.brand--logo::after,
+.brand--page::before,
+.brand--page::after {
+  display: none;
 }
 
 * {
@@ -51,7 +172,7 @@ body {
 }
 
 /* Background: clipped cosmic image + gradient overlays */
-.gel-ui::before {
+body::before {
   content: '';
   position: fixed;
   inset: 0;
@@ -59,7 +180,7 @@ body {
   background: url('../../assets/background-landscape.png') center / cover no-repeat;
 }
 
-.gel-ui {
+body {
   background-image:
     linear-gradient(135deg, rgba(0, 100, 200, 0.08) 0%, transparent 50%),
     linear-gradient(225deg, rgba(0, 150, 255, 0.06) 0%, transparent 45%),
@@ -147,17 +268,14 @@ body {
   padding: 10px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  justify-content: space-between;
   overflow: hidden;
 }
 
 .topBar {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 12px;
-  flex-shrink: 0;
-  flex-wrap: wrap;
+  justify-content: space-between;
   padding: 0;
   position: relative;
   -webkit-app-region: no-drag; /* Top bar is inside game container, so non-draggable */
@@ -168,12 +286,7 @@ body {
   align-items: center;
   gap: 8px;
   padding: 8px 12px;
-  background: var(--card-bg);
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
-  border: 1px solid var(--card-border);
   border-radius: 12px;
-  box-shadow: var(--card-shadow);
   -webkit-app-region: no-drag; /* Make brand non-draggable so it's clickable */
 }
 
@@ -267,7 +380,7 @@ body {
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
   border: 1px solid var(--card-border);
-  border-radius: 8px;
+  border-radius: 50%;
   color: var(--text-primary);
   cursor: pointer;
   transition: all 0.2s;
@@ -295,6 +408,124 @@ body {
   stroke: currentColor;
 }
 
+/* User combo (dropdown) */
+.userCombo {
+  position: relative;
+  flex-shrink: 0;
+  width: 120px;
+  margin-right: 48px;
+  -webkit-app-region: no-drag;
+}
+
+.userCombo-trigger {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: var(--card-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  -webkit-app-region: no-drag;
+}
+
+.userCombo-trigger:hover {
+  background: rgba(0, 200, 255, 0.15);
+  border-color: var(--glass-border-strong);
+}
+
+.userCombo-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.userCombo-chevron {
+  width: 14px;
+  height: 14px;
+  transition: transform 0.2s;
+}
+
+.userCombo.open .userCombo-chevron {
+  transform: rotate(180deg);
+}
+
+.userCombo-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  width: 100%;
+  padding: 6px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur-strong));
+  border: 1px solid var(--glass-border-strong);
+  border-radius: 10px;
+  box-shadow: var(--glass-shadow), var(--glass-glow);
+  display: none;
+  z-index: 100;
+}
+
+.userCombo.open .userCombo-dropdown {
+  display: block;
+}
+
+.userCombo-signOut {
+  display: block;
+  width: 100%;
+  padding: 8px 14px;
+  font-size: 13px;
+  background: transparent;
+  border: none;
+  border-radius: 20px;
+  color: #ff6b6b;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+  -webkit-app-region: no-drag;
+}
+
+.userCombo-signOut:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Game stats grid (2x2) in side panel */
+.gameStatsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-shrink: 0;
+}
+
+.gameStatItem {
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.gameStatLabel {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.gameStatValue {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--accent, #fff);
+  line-height: 1.2;
+}
+
 .statsRow {
   display: flex;
   gap: 6px;
@@ -306,13 +537,7 @@ body {
 
 .statCard {
   padding: 6px 10px;
-  background: var(--card-bg);
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
-  border: 1px solid var(--glass-border);
-  border-radius: 10px;
   min-width: 80px;
-  box-shadow: var(--card-shadow), 0 0 16px rgba(0, 200, 255, 0.15);
 }
 
 .statCard:before,
@@ -369,36 +594,27 @@ body {
 
 .mainGrid {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  gap: 12px;
   flex: 1;
   min-height: 0;
   max-height: 100%;
   overflow: hidden;
+  padding: 0 20px;
 }
 
 .boardWrap {
-  background: var(--card-bg);
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
-  border: 1px solid var(--card-border);
   border-radius: 12px;
-  padding: 8px;
+  padding: 8px 16px;
   display: flex;
   flex-direction: column;
   flex: 1;
-  max-width: 450px;
+  max-width: 480px;
   max-height: 450px;
   min-width: 0;
   width: 450px;
   aspect-ratio: 1;
-  box-shadow: var(--card-shadow);
   -webkit-app-region: no-drag; /* Make game board non-draggable for gameplay */
-}
-
-.boardWrap::before {
-  display: block;
 }
 
 .boardHeader {
@@ -419,19 +635,15 @@ body {
 
 .boardMeta {
   font-size: 9px;
-  color: var(--text-muted);
   padding: 3px 8px;
-  background: var(--glass-bg-light);
-  border: 1px solid var(--glass-border);
   border-radius: 6px;
+  background: var(--gel-badge-bg);
+  border: var(--gel-badge-border);
+  color: #f3fbff;
 }
 
 .boardGrid {
   padding: 8px;
-  background: rgba(0, 35, 70, 0.3);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid var(--glass-border);
   border-radius: 10px;
   flex: 1;
   display: flex;
@@ -439,7 +651,9 @@ body {
   justify-content: center;
   overflow: hidden;
   position: relative;
-  box-shadow: var(--glass-highlight), 0 0 20px rgba(0, 200, 255, 0.12);
+  border: var(--gel-surface-border);
+  background: var(--gel-surface-bg);
+  box-shadow: var(--gel-surface-shadow);
 }
 
 .boardGrid.paused #gameBoard {
@@ -451,13 +665,13 @@ body {
 #gameBoard {
   display: block;
   margin: auto;
-  background: rgba(0, 20, 50, 0.4);
-  border: 1px solid var(--glass-border);
   border-radius: 8px;
-  box-shadow: 0 0 16px rgba(0, 200, 255, 0.15);
   image-rendering: pixelated;
   image-rendering: crisp-edges;
   transition: filter 0.3s ease, opacity 0.3s ease;
+  border: var(--gel-surface-border);
+  background: var(--gel-surface-bg);
+  box-shadow: var(--gel-surface-shadow);
 }
 
 /* Pause Overlay */
@@ -476,16 +690,8 @@ body {
 }
 
 .pause-status-box {
-  background: var(--glass-bg);
-  backdrop-filter: blur(var(--glass-blur-strong));
-  -webkit-backdrop-filter: blur(var(--glass-blur-strong));
-  border: 1px solid var(--glass-border-strong);
   border-radius: 16px;
   padding: 32px 28px;
-  box-shadow: 
-    var(--glass-shadow),
-    var(--glass-highlight),
-    var(--glass-glow-strong);
   text-align: center;
   min-width: 280px;
   max-width: 90%;
@@ -498,10 +704,10 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 200, 255, 0.2);
-  border: 2px solid var(--glass-border-strong);
   border-radius: 12px;
   color: var(--accent-cyan);
+  background: rgba(0, 200, 255, 0.2);
+  border: 2px solid var(--glass-border-strong);
   box-shadow: 0 0 16px rgba(0, 200, 255, 0.3);
 }
 
@@ -575,12 +781,8 @@ body {
   flex: 1;
   max-width: 140px;
   padding: 8px 14px;
-  background: var(--card-bg);
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
   color: var(--text-primary);
-  border: 1px solid var(--glass-border);
-  border-radius: 12px;
+  border-radius: 20px;
   font-weight: 600;
   font-size: 11px;
   cursor: pointer;
@@ -589,19 +791,18 @@ body {
   align-items: center;
   justify-content: center;
   gap: 5px;
-  box-shadow: var(--card-shadow), 0 0 14px rgba(0, 200, 255, 0.12);
   text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
   -webkit-app-region: no-drag; /* Make buttons clickable */
 }
 
 .glassBtn:hover {
-  filter: brightness(1.08);
-  border-color: rgba(120, 200, 255, 0.4);
-  box-shadow: var(--card-shadow-hover);
+  border-color: var(--gel-hover-border);
+  box-shadow: var(--gel-hover-shadow);
 }
 
 .glassBtn:active {
-  filter: brightness(0.98);
+  transform: translateY(1px);
+  box-shadow: 0 0 4px rgba(80, 230, 255, 0.18), 0 5px 10px rgba(0, 10, 30, 0.25);
 }
 
 .glassBtn.secondary {
@@ -610,15 +811,7 @@ body {
 }
 
 .glassBtn.secondary:hover {
-  filter: brightness(1.06);
-}
-
-.glassBtn.secondary:active {
-  filter: brightness(0.98);
-}
-
-.glassBtn::before {
-  display: block;
+  border-color: rgba(120, 200, 255, 0.45);
 }
 
 .glassBtn .btnIcon {
@@ -627,24 +820,26 @@ body {
   flex-shrink: 0;
 }
 
+.glassBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: auto;
+}
+
+.glassBtn:disabled:hover {
+  filter: none;
+}
+
 .sideCard {
-  background: var(--card-bg);
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
-  border: 1px solid var(--card-border);
   border-radius: 12px;
   padding: 12px;
   display: flex;
   flex-direction: column;
-  width: 200px;
+  width: 240px;
   flex-shrink: 0;
+  min-height: 450px;
   max-height: 450px;
-  box-shadow: var(--card-shadow);
   -webkit-app-region: no-drag; /* Make side card non-draggable for shape dragging */
-}
-
-.sideCard::before {
-  display: block;
 }
 
 .sideHeader {
@@ -666,16 +861,17 @@ body {
 
 .sideSub {
   font-size: 9px;
-  color: var(--text-muted);
   padding: 3px 8px;
-  background: var(--glass-bg-light);
-  border: 1px solid var(--glass-border);
   border-radius: 6px;
+  background: var(--gel-badge-bg);
+  border: var(--gel-badge-border);
+  color: #f3fbff;
 }
 
 .nextList {
   display: flex;
   flex-direction: column;
+  justify-content: space-around;
   align-items: center;
   gap: 14px;
   flex: 1;
@@ -683,13 +879,8 @@ body {
   overflow-x: hidden;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
-  background: var(--card-bg);
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
-  border: 1px solid var(--glass-border);
   border-radius: 10px;
   padding: 10px;
-  box-shadow: var(--card-shadow), 0 0 18px rgba(0, 200, 255, 0.12);
 }
 
 /* Consolidated scrollbar styles */
@@ -783,50 +974,58 @@ body {
 
 .footerBar {
   display: flex;
-  gap: 6px;
+  gap: 8px;
   justify-content: center;
   flex-shrink: 0;
   flex-wrap: wrap;
 }
 
 .footerPill {
-  padding: 6px 12px;
-  background: var(--card-bg);
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
-  border: 1px solid var(--glass-border);
+  padding: 8px 16px;
   border-radius: 20px;
   font-weight: 600;
-  font-size: 10px;
+  font-size: 12px;
   cursor: pointer;
   transition: all 0.2s;
   color: var(--text-primary);
-  box-shadow: var(--card-shadow), 0 0 12px rgba(0, 200, 255, 0.1);
   text-shadow: 0 0 8px rgba(255, 255, 255, 0.35);
   -webkit-app-region: no-drag; /* Make footer pills clickable */
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
+}
+
+button.footerPill {
+  font-family: inherit;
+}
+
+.footerPill--save {
+  font-size: 12px;
 }
 
 .footerPill-icon {
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
   flex-shrink: 0;
   stroke: currentColor;
   fill: none;
 }
 
 .footerPill:hover {
-  filter: brightness(1.08);
-  border-color: rgba(120, 200, 255, 0.4);
-  box-shadow: var(--card-shadow-hover);
+  border-color: var(--gel-hover-border);
+  box-shadow: var(--gel-hover-shadow);
+}
+
+.footerPill:active {
+  transform: translateY(1px);
+  box-shadow: 0 0 4px rgba(80, 230, 255, 0.18), 0 5px 10px rgba(0, 10, 30, 0.25);
 }
 
 /* Page Navigation */
 .page {
   display: none;
   width: 100%;
+  height: 100%;
 }
 
 .page.active {
@@ -853,12 +1052,12 @@ body {
 
 .scores-content .score-section:nth-child(2) {
   grid-column: 1;
-  min-height: 180px;
+  min-height: 360px;
 }
 
 .scores-content .score-section:nth-child(3) {
   grid-column: 2;
-  min-height: 180px;
+  min-height: 360px;
 }
 
 /* Stats summary bar – compact 4-card row at top */
@@ -874,12 +1073,8 @@ body {
 }
 
 .stat-card {
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: 10px;
   padding: 12px 14px;
   text-align: center;
-  box-shadow: var(--card-shadow);
   min-width: 0;
 }
 
@@ -905,39 +1100,22 @@ body {
 .challenge-card,
 .challenge-history,
 .settings-section {
-  background: var(--glass-bg-light);
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
-  border: 1px solid var(--glass-border);
   border-radius: 12px;
-  padding: 12px;
-  box-shadow: var(--glass-shadow), var(--glass-highlight), var(--glass-glow), 0 0 12px rgba(100, 220, 255, 0.12);
+  padding: 14px 16px;
   display: flex;
   flex-direction: column;
   min-width: 0;
   min-height: fit-content;
 }
 
-/* Score page grid: stats bar full width, then Best | Recent side-by-side */
-.scores-content {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto 1fr;
-  gap: 14px;
+/* Settings sections: prevent overlap, clear separation */
+.settings-content .settings-section {
+  flex-shrink: 0;
+  isolation: isolate;
+  position: relative;
+  z-index: 1;
+  padding: 14px 16px;
 }
-
-.scores-content .score-stats-bar {
-  grid-column: 1 / -1;
-}
-
-.scores-content .score-section:nth-child(2) {
-  grid-column: 1;
-}
-
-.scores-content .score-section:nth-child(3) {
-  grid-column: 2;
-}
-
 
 .score-list {
   display: flex;
@@ -965,18 +1143,14 @@ body {
   gap: 12px;
   align-items: center;
   padding: 10px 12px;
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
   border-radius: 10px;
   transition: all 0.2s;
   flex-shrink: 0;
-  position: relative;
-  box-shadow: var(--card-shadow);
 }
 
 .score-item:hover {
-  border-color: rgba(120, 200, 255, 0.4);
-  box-shadow: var(--card-shadow-hover);
+  border-color: var(--gel-hover-border);
+  box-shadow: var(--gel-hover-shadow);
 }
 
 .score-item-rank {
@@ -1011,10 +1185,11 @@ body {
   flex-shrink: 0;
   border-radius: 8px;
   overflow: hidden;
-  border: 1px solid var(--glass-border);
-  background: rgba(0, 30, 60, 0.4);
   cursor: pointer;
   transition: all 0.2s;
+  border: var(--gel-surface-border);
+  background: var(--gel-surface-bg);
+  box-shadow: var(--gel-surface-shadow);
 }
 
 .score-item-screenshot:hover {
@@ -1040,11 +1215,8 @@ body {
 
 .stat-item {
   padding: 14px 12px;
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
   border-radius: 12px;
   text-align: center;
-  box-shadow: var(--card-shadow);
 }
 
 .stats-list .stat-item {
@@ -1123,10 +1295,11 @@ body {
 .progress-bar {
   width: 100%;
   height: 12px;
-  background: rgba(0, 40, 80, 0.4);
   border-radius: 8px;
   overflow: hidden;
-  border: 1px solid var(--glass-border);
+  border: var(--gel-surface-border);
+  background: var(--gel-surface-bg);
+  box-shadow: var(--gel-surface-shadow);
 }
 
 .progress-fill {
@@ -1153,11 +1326,8 @@ body {
 
 .challenge-stat {
   padding: 14px 12px;
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
   border-radius: 12px;
   text-align: center;
-  box-shadow: var(--card-shadow);
 }
 
 .challenge-stat-label {
@@ -1189,11 +1359,8 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 8px 10px;
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
   border-radius: 10px;
   flex-shrink: 0;
-  box-shadow: var(--card-shadow);
 }
 
 .history-item-date {
@@ -1226,6 +1393,16 @@ body {
   max-width: 100%;
   width: 100%;
 }
+
+.settings-page .shell {
+  justify-content: flex-start;
+  gap: 0;
+}
+
+.settings-page .shell main {
+  flex: 1;
+  min-height: 0;
+}
 :is(.game-page, .scores-page, .challenge-page, .settings-page) .game-container {
   width: 850px;
   height: 650px;
@@ -1235,27 +1412,302 @@ body {
 :is(.game-page, .scores-page, .challenge-page, .settings-page) .topBar {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 12px;
-  flex-shrink: 0;
-  flex-wrap: wrap;
+  justify-content: space-between;
   padding: 0;
-}
-.game-page .topBar {
-  gap: 40px;
 }
 :is(.game-page, .scores-page, .challenge-page, .settings-page) .footerBar {
   display: flex;
-  gap: 6px;
+  gap: 8px;
   justify-content: center;
   flex-shrink: 0;
   flex-wrap: wrap;
 }
 
+/* ========== Settings Page Redesign ========== */
+.settings-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  padding: 10px 0;
+  align-content: start;
+}
+
+.settings-layout::-webkit-scrollbar {
+  width: 8px;
+}
+
+.settings-layout::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.settings-layout::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 4px;
+}
+
+.settings-col {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.settings-card {
+  background: rgba(15, 45, 90, 0.5);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(100, 180, 255, 0.2);
+  border-radius: 12px;
+  padding: 16px 18px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  -webkit-app-region: no-drag;
+}
+
+.settings-card-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: 0.04em;
+  margin: 0 0 10px 0;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.settings-card-title-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  color: rgba(100, 200, 255, 0.9);
+}
+
+.settings-card-title-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.settings-field {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  min-height: 38px;
+}
+
+.settings-field + .settings-field {
+  margin-top: 0;
+}
+
+.settings-label {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.settings-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.settings-input {
+  width: 160px;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+  background: rgba(0, 20, 50, 0.5);
+  border: 1px solid rgba(100, 180, 255, 0.25);
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.settings-input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.settings-input:focus {
+  border-color: rgba(100, 180, 255, 0.5);
+}
+
+.settings-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.settings-password {
+  font-family: ui-monospace, monospace;
+  letter-spacing: 2px;
+}
+
+.settings-btn {
+  width: 100%;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 10px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.9);
+  -webkit-app-region: no-drag;
+}
+
+.settings-btn--danger-secondary {
+  background: rgba(180, 60, 60, 0.2);
+  border-color: rgba(255, 120, 120, 0.35);
+  color: #ffb3b3;
+}
+
+.settings-btn--danger-secondary:hover {
+  background: rgba(180, 60, 60, 0.35);
+  border-color: rgba(255, 150, 150, 0.5);
+}
+
+.settings-btn--outline {
+  background: transparent;
+  border: 1px solid rgba(150, 200, 255, 0.35);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.settings-btn--outline:hover {
+  background: rgba(30, 80, 150, 0.3);
+  border-color: rgba(150, 200, 255, 0.5);
+}
+
+.settings-btn--outline-danger {
+  background: transparent;
+  border: 1px solid rgba(255, 100, 100, 0.4);
+  color: #ffaaaa;
+}
+
+.settings-btn--outline-danger:hover {
+  background: rgba(180, 60, 60, 0.2);
+  border-color: rgba(255, 120, 120, 0.5);
+}
+
+.settings-actions {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.settings-actions .settings-btn {
+  margin-top: 0;
+  flex: 1;
+}
+
+.segmented-control {
+  display: flex;
+  background: rgba(0, 20, 50, 0.4);
+  border-radius: 20px;
+  padding: 3px;
+  border: 1px solid rgba(100, 180, 255, 0.2);
+}
+
+.segmented-btn {
+  flex: 1;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  border: none;
+  border-radius: 16px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.75);
+  cursor: pointer;
+  transition: all 0.2s;
+  -webkit-app-region: no-drag;
+}
+
+.segmented-btn:hover {
+  color: #fff;
+}
+
+.segmented-btn.active {
+  background: rgba(50, 120, 200, 0.5);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 44px;
+  padding: 6px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.settings-row:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.settings-row-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.settings-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 6px 0 0;
+  margin-top: auto;
+  flex-shrink: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.settings-footer-btn {
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+  -webkit-app-region: no-drag;
+}
+
+.settings-footer-btn--ghost {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.settings-footer-btn--ghost:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.settings-footer-btn--primary {
+  background: linear-gradient(135deg, #2a8fd8, #1e6bb8);
+  color: #fff;
+  border-color: rgba(100, 180, 255, 0.4);
+  box-shadow: 0 4px 4px rgba(0, 100, 180, 0.3);
+}
+
+.settings-footer-btn--primary:hover {
+  background: linear-gradient(135deg, #3399e8, #2580c8);
+  box-shadow: 0 4px 8px rgba(0, 120, 200, 0.4);
+}
+
 .settings-content {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
+  gap: 14px;
   max-height: calc(100% - 120px);
   overflow-y: auto;
   overflow-x: hidden;
@@ -1288,8 +1740,12 @@ body {
   gap: 8px;
   margin-bottom: 10px;
   padding-bottom: 8px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
   flex-shrink: 0;
+}
+
+.settings-section .section-header {
+  margin-bottom: 12px;
 }
 
 .section-icon {
@@ -1323,7 +1779,11 @@ body {
 .settings-grid {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
+}
+
+.settings-section .settings-grid {
+  margin-top: 4px;
 }
 
 .setting-card {
@@ -1382,6 +1842,56 @@ body {
   color: var(--text-muted);
 }
 
+/* Compact Audio & Visual section */
+.settings-section--compact .settings-grid {
+  gap: 6px;
+}
+
+.settings-section--compact .setting-card {
+  padding: 6px 10px;
+  gap: 8px;
+  border-radius: 8px;
+}
+
+.settings-section--compact .setting-card-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+}
+
+.settings-section--compact .setting-card-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.settings-section--compact .setting-card-title {
+  font-size: 13px;
+}
+
+.settings-section--compact .setting-card-desc {
+  font-size: 11px;
+}
+
+.settings-section--compact .toggle-switch {
+  width: 44px;
+  height: 24px;
+}
+
+.settings-section--compact .toggle-slider {
+  border-radius: 24px;
+}
+
+.settings-section--compact .toggle-slider:before {
+  height: 16px;
+  width: 16px;
+  left: 2px;
+  bottom: 2px;
+}
+
+.settings-section--compact .toggle-switch input:checked + .toggle-slider:before {
+  transform: translateX(20px);
+}
+
 .toggle-switch {
   position: relative;
   display: inline-block;
@@ -1435,6 +1945,38 @@ body {
 }
 
 /* Difficulty Selector */
+/* Small difficulty buttons */
+.difficulty-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.difficulty-btn {
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--card-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s;
+  -webkit-app-region: no-drag;
+}
+
+.difficulty-btn:hover {
+  background: rgba(30, 80, 150, 0.45);
+  border-color: rgba(120, 200, 255, 0.4);
+}
+
+.difficulty-btn.active {
+  background: rgba(40, 100, 180, 0.5);
+  border-color: rgba(120, 200, 255, 0.5);
+  box-shadow: 0 0 8px rgba(0, 200, 255, 0.2);
+}
+
 .difficulty-selector {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -1491,7 +2033,53 @@ body {
 .action-buttons {
   display: flex;
   flex-direction: column;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+/* Data management small buttons */
+.data-mgmt-buttons {
+  display: flex;
   gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.data-mgmt-btn {
+  padding: 6px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  background: var(--card-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  -webkit-app-region: no-drag;
+}
+
+.data-mgmt-btn:hover {
+  background: rgba(30, 80, 150, 0.45);
+  border-color: rgba(120, 200, 255, 0.4);
+}
+
+.data-mgmt-btn.danger {
+  border-color: rgba(255, 100, 100, 0.5);
+  color: #ffcccc;
+}
+
+.data-mgmt-btn.danger:hover {
+  background: rgba(180, 60, 60, 0.4);
+  border-color: rgba(255, 120, 120, 0.6);
+}
+
+.data-mgmt-btn svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
 }
 
 .action-btn {
@@ -1603,7 +2191,7 @@ body {
   background: var(--glass-bg-light);
   backdrop-filter: blur(var(--glass-blur));
   border: 1px solid var(--glass-border);
-  border-radius: 14px;
+  border-radius: 20px;
   color: var(--text-primary);
   font-size: 16px;
   font-weight: 600;
@@ -1671,7 +2259,7 @@ body {
   background: var(--glass-bg-light);
   backdrop-filter: blur(var(--glass-blur));
   border: 1px solid var(--glass-border);
-  border-radius: 10px;
+  border-radius: 50%;
   color: var(--text-primary);
   cursor: pointer;
   display: flex;
@@ -1692,6 +2280,218 @@ body {
 .screenshot-close svg {
   width: 18px;
   height: 18px;
+}
+
+/* Daily Challenge Reward Modal - show on top when completed */
+#dailyChallengeRewardModal {
+  z-index: 1050;
+}
+
+/* Auth Overlay */
+.auth-overlay {
+  z-index: 1100;
+}
+
+.auth-modal {
+  max-width: 360px;
+}
+
+.auth-subtitle {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+}
+
+.auth-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.auth-tab {
+  flex: 1;
+  padding: 10px 16px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  -webkit-app-region: no-drag;
+}
+
+.auth-tab:hover {
+  background: rgba(0, 200, 255, 0.15);
+  border-color: var(--glass-border-strong);
+}
+
+.auth-tab.active {
+  background: rgba(0, 200, 255, 0.25);
+  border-color: var(--glass-border-strong);
+  box-shadow: var(--glass-glow);
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.auth-form.hidden {
+  display: none;
+}
+
+.auth-input {
+  padding: 12px 16px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  color: var(--text-primary);
+  font-size: 16px;
+  -webkit-app-region: no-drag;
+}
+
+.auth-input::placeholder {
+  color: var(--text-muted);
+}
+
+.auth-input:focus {
+  outline: none;
+  border-color: var(--glass-border-strong);
+  box-shadow: 0 0 12px rgba(0, 200, 255, 0.3);
+}
+
+.auth-error {
+  font-size: 13px;
+  color: #ff6b6b;
+  margin: 0;
+  min-height: 18px;
+}
+
+.auth-submit {
+  margin-top: 8px;
+}
+
+.auth-bonus {
+  font-size: 12px;
+  color: #F6C85F;
+  margin: 8px 0 0;
+}
+
+/* Account section in settings */
+.account-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.account-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: var(--glass-bg);
+  border-radius: 10px;
+  border: 1px solid var(--glass-border);
+}
+
+.account-label {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.account-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.account-password {
+  font-family: monospace;
+  letter-spacing: 2px;
+}
+
+/* Sign Out button - ensure visibility */
+.account-info .action-btn {
+  margin-top: 4px;
+  background: rgba(180, 60, 60, 0.35);
+  border: 1px solid rgba(255, 120, 120, 0.5);
+  color: #ffcccc;
+  font-weight: 600;
+}
+
+.account-info .action-btn:hover {
+  background: rgba(180, 60, 60, 0.5);
+  border-color: rgba(255, 150, 150, 0.6);
+}
+
+/* Start Game Overlay */
+.start-game-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 20, 50, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: inherit;
+  z-index: 5;
+}
+
+.start-game-overlay.hidden {
+  display: none;
+}
+
+.start-game-box {
+  width: 300px;
+  text-align: center;
+  padding: 32px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur-strong));
+  border: 1px solid var(--glass-border-strong);
+  border-radius: 16px;
+  box-shadow: var(--glass-shadow), var(--glass-glow-strong);
+}
+
+.start-game-title {
+  font-size: 24px;
+  margin-bottom: 16px;
+  color: #fff;
+}
+
+.start-game-cost,
+.start-game-coins {
+  font-size: 16px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.start-game-cost span,
+.start-game-coins span {
+  color: #F6C85F;
+  font-weight: 600;
+}
+
+.start-game-btn {
+  margin: 20px auto 0;
+  padding: 10px 20px;
+}
+
+.start-game-insufficient {
+  font-size: 13px;
+  color: #ff6b6b;
+  margin-top: 12px;
+}
+
+/* Modal rewards text */
+.modal-rewards {
+  font-size: 18px;
+  font-weight: 600;
+  color: #F6C85F;
+  margin-bottom: 24px;
 }
 
 /* Responsive */
@@ -1743,11 +2543,21 @@ body {
   .settings-section {
     padding: 12px;
   }
+  .settings-content {
+    grid-template-columns: 1fr;
+  }
+  .settings-layout {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
   .settings-grid {
     grid-template-columns: 1fr;
   }
   .difficulty-selector {
     grid-template-columns: 1fr;
+  }
+  .difficulty-buttons {
+    flex-direction: column;
   }
   .action-buttons {
     flex-direction: column;
@@ -1815,6 +2625,11 @@ body {
   .settings-content {
     max-height: calc(100% - 100px);
     padding: 6px 0;
+  }
+  .settings-layout {
+    grid-template-columns: 1fr;
+    padding: 16px 0;
+    gap: 8px;
   }
   .stat-card-value {
     font-size: 18px;
@@ -1949,143 +2764,3 @@ body {
   }
 }
 
-/* ========== Blue gel UI overrides (scoped) ========== */
-.gel-ui .glassBtn,
-.gel-ui .footerPill,
-.gel-ui .statCard,
-.gel-ui .brand,
-.gel-ui .boardWrap,
-.gel-ui .sideCard,
-.gel-ui .nextList,
-.gel-ui .score-section,
-.gel-ui .challenge-card,
-.gel-ui .challenge-history,
-.gel-ui .settings-section,
-.gel-ui .history-item,
-.gel-ui .score-item,
-.gel-ui .stat-item,
-.gel-ui .stat-card,
-.gel-ui .challenge-stat,
-.gel-ui .pause-status-box,
-.gel-ui .pause-status-icon {
-  position: relative;
-  overflow: hidden;
-  background: rgba(20, 60, 120, 0.4);
-  border: 1px solid rgba(100, 180, 255, 0.3);
-  box-shadow: 0 2px 8px rgba(0, 20, 50, 0.2);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-
-.gel-ui .brand--logo,
-.gel-ui .brand--page {
-  background: none;
-  border: none;
-  box-shadow: none;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-}
-
-.gel-ui .brand--logo::before,
-.gel-ui .brand--logo::after,
-.gel-ui .brand--page::before,
-.gel-ui .brand--page::after {
-  display: none;
-}
-
-.gel-ui .glassBtn::before,
-.gel-ui .footerPill::before,
-.gel-ui .statCard::before,
-.gel-ui .brand::before,
-.gel-ui .boardWrap::before,
-.gel-ui .sideCard::before,
-.gel-ui .nextList::before,
-.gel-ui .score-section::before,
-.gel-ui .challenge-card::before,
-.gel-ui .challenge-history::before,
-.gel-ui .settings-section::before,
-.gel-ui .history-item::before,
-.gel-ui .score-item::before,
-.gel-ui .stat-item::before,
-.gel-ui .stat-card::before,
-.gel-ui .challenge-stat::before,
-.gel-ui .pause-status-box::before,
-.gel-ui .pause-status-icon::before {
-  content: '';
-  position: absolute;
-  inset: 2px 2px auto 2px;
-  height: 20%;
-  border-radius: inherit;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 50%, rgba(255, 255, 255, 0) 100%);
-  opacity: 0.3;
-  pointer-events: none;
-}
-
-.gel-ui .glassBtn::after,
-.gel-ui .footerPill::after,
-.gel-ui .statCard::after,
-.gel-ui .brand::after,
-.gel-ui .boardWrap::after,
-.gel-ui .sideCard::after,
-.gel-ui .nextList::after,
-.gel-ui .score-section::after,
-.gel-ui .challenge-card::after,
-.gel-ui .challenge-history::after,
-.gel-ui .settings-section::after,
-.gel-ui .history-item::after,
-.gel-ui .score-item::after,
-.gel-ui .stat-item::after,
-.gel-ui .stat-card::after,
-.gel-ui .challenge-stat::after,
-.gel-ui .pause-status-box::after,
-.gel-ui .pause-status-icon::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  box-shadow:
-    inset 0 -2px 4px rgba(0, 20, 60, 0.15),
-    inset 0 1px 2px rgba(255, 255, 255, 0.08);
-  pointer-events: none;
-}
-
-.gel-ui .glassBtn:hover,
-.gel-ui .footerPill:hover,
-.gel-ui .score-item:hover {
-  border-color: rgba(120, 200, 255, 0.4);
-  box-shadow: 0 2px 8px rgba(0, 20, 50, 0.25), 0 0 4px rgba(100, 200, 255, 0.15);
-}
-
-.gel-ui .glassBtn:active,
-.gel-ui .footerPill:active {
-  transform: translateY(1px);
-  box-shadow: 0 0 4px rgba(80, 230, 255, 0.18), 0 5px 10px rgba(0, 10, 30, 0.25);
-}
-
-.gel-ui .glassBtn.secondary {
-  background: rgba(30, 80, 150, 0.45);
-  border-color: rgba(100, 180, 255, 0.35);
-}
-
-.gel-ui .glassBtn.secondary:hover {
-  border-color: rgba(120, 200, 255, 0.45);
-}
-
-.gel-ui .boardGrid,
-.gel-ui #gameBoard,
-.gel-ui .score-item-screenshot,
-.gel-ui .progress-bar {
-  border: 1px solid rgba(120, 230, 255, 0.6);
-  background:
-    radial-gradient(140% 120% at 50% 0%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.03) 40%, rgba(255, 255, 255, 0) 70%),
-    linear-gradient(180deg, rgba(15, 70, 150, 0.6) 0%, rgba(6, 35, 95, 0.75) 100%);
-  box-shadow: inset 0 0 12px rgba(0, 40, 90, 0.4), 0 0 12px rgba(0, 210, 255, 0.25), 0 0 24px rgba(0, 180, 255, 0.12);
-}
-
-.gel-ui .sideSub,
-.gel-ui .boardMeta {
-  background:
-    linear-gradient(180deg, rgba(100, 190, 255, 0.7) 0%, rgba(30, 110, 210, 0.85) 100%);
-  border: 1px solid rgba(160, 240, 255, 0.7);
-  color: #f3fbff;
-}

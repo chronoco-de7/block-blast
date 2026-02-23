@@ -1,10 +1,15 @@
 import { BOARD_SIZE } from './config.js';
-import { gameState, boardCanvas, boardCtx, setCellSize, resetGameState, setBoardCanvas, setBoardCtx } from './state.js';
+import { gameState, boardCanvas, boardCtx, setCellSize, resetGameState, setBoardCanvas, setBoardCtx, isGameInProgress } from './state.js';
 import { canPlaceShape } from './board.js';
 import { generateShapes } from './shapes.js';
 import { render } from './render.js';
 import { removeDragGhost } from './drag.js';
 import { getStoredData, setStoredData, getDailyChallenge } from './storage.js';
+import { addCoins } from './auth.js';
+
+const COINS_PER_LINE = 5;
+const COINS_PER_LEVEL = 20;
+const DAILY_CHALLENGE_COIN_REWARD = 50;
 
 export function captureGameScreenshot() {
     if (!boardCanvas) return null;
@@ -40,12 +45,30 @@ export function updateDailyChallenge(score, lines, level) {
         challenge.completed = true;
         challenge.completedAt = new Date().toISOString();
         gameState.score += challenge.goal.target * 10;
+        addCoins(DAILY_CHALLENGE_COIN_REWARD);
+        showDailyChallengeRewardModal(DAILY_CHALLENGE_COIN_REWARD);
+        window.dispatchEvent(new CustomEvent('coinsUpdated'));
         updateUI();
     }
     const challenges = getStoredData('dailyChallenges', {});
     challenges[challenge.date] = challenge;
     setStoredData('dailyChallenges', challenges);
     return challenge;
+}
+
+function showDailyChallengeRewardModal(coins) {
+    const modal = document.getElementById('dailyChallengeRewardModal');
+    const coinsEl = document.getElementById('dailyRewardCoins');
+    if (coinsEl) coinsEl.textContent = coins;
+    if (modal) modal.classList.add('show');
+}
+
+function updateGameButtonsState() {
+    const enabled = isGameInProgress();
+    const hintBtn = document.getElementById('hintBtn');
+    const pauseBtn = document.getElementById('pauseBtn');
+    if (hintBtn) hintBtn.disabled = !enabled;
+    if (pauseBtn) pauseBtn.disabled = !enabled;
 }
 
 export function updateUI() {
@@ -55,6 +78,7 @@ export function updateUI() {
     if (scoreEl) scoreEl.textContent = gameState.score;
     if (linesEl) linesEl.textContent = gameState.lines;
     if (levelEl) levelEl.textContent = gameState.level;
+    updateGameButtonsState();
 }
 
 export function checkGameOver() {
@@ -75,12 +99,21 @@ export function checkGameOver() {
 
 export function showGameOverModal() {
     saveScore(gameState.score, gameState.lines, gameState.level);
-    updateDailyChallenge(gameState.score, gameState.lines, gameState.level);
+    const wasNewCompletion = !getDailyChallenge().completed;
+    const challenge = updateDailyChallenge(gameState.score, gameState.lines, gameState.level);
+
+    const rewardCoins = Math.floor(gameState.lines * COINS_PER_LINE + gameState.level * COINS_PER_LEVEL);
+    addCoins(rewardCoins);
+
     const finalScore = document.getElementById('finalScore');
     const finalLines = document.getElementById('finalLines');
+    const rewardEl = document.getElementById('rewardCoins');
     if (finalScore) finalScore.textContent = gameState.score;
     if (finalLines) finalLines.textContent = gameState.lines;
+    if (rewardEl) rewardEl.textContent = rewardCoins + (challenge.completed && wasNewCompletion ? ' + ' + DAILY_CHALLENGE_COIN_REWARD + ' (daily)' : '');
+    window.dispatchEvent(new CustomEvent('coinsUpdated'));
     document.getElementById('gameOverModal')?.classList.add('show');
+    updateGameButtonsState();
 }
 
 export function restartGame() {
@@ -185,7 +218,7 @@ export function closeScreenshotModal() {
     document.getElementById('screenshotModal')?.classList.remove('show');
 }
 
-export function initGame(setupEventListeners) {
+export function initGame(setupEventListeners, skipShapes = false) {
     resetGameState();
 
     const canvas = document.getElementById('gameBoard');
@@ -194,8 +227,12 @@ export function initGame(setupEventListeners) {
     setBoardCtx(canvas.getContext('2d'));
 
     resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-    generateShapes(3);
+    if (!window._resizeBound) {
+        window.addEventListener('resize', resizeCanvas);
+        window._resizeBound = true;
+    }
+    if (!skipShapes) generateShapes(3);
     if (typeof setupEventListeners === 'function') setupEventListeners();
+    updateUI();
     render();
 }

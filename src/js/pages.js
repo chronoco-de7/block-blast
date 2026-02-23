@@ -1,5 +1,8 @@
 import { getStoredData, setStoredData, getSettings, getDailyChallenge, defaultSettings, saveSettingsToStorage } from './storage.js';
 import { showScreenshot } from './game.js';
+import { isGameInProgress } from './state.js';
+import { getCurrentUser, updateUsername, updatePassword } from './auth.js';
+import { updateUserInfoDisplay } from './auth-ui.js';
 
 export function formatDate(dateString) {
     const date = new Date(dateString);
@@ -134,6 +137,22 @@ export function loadChallengePage() {
 }
 
 export function loadSettingsPage() {
+    const user = getCurrentUser();
+    const settingsUsername = document.getElementById('settingsUsername');
+    const settingsPassword = document.getElementById('settingsPassword');
+    const settingsCoins = document.getElementById('settingsCoins');
+    if (settingsUsername) {
+        settingsUsername.value = user?.username ?? '';
+        settingsUsername.placeholder = user ? '' : '—';
+        settingsUsername.disabled = !user;
+    }
+    if (settingsPassword) {
+        settingsPassword.value = '';
+        settingsPassword.placeholder = user ? '••••••' : '—';
+        settingsPassword.disabled = !user;
+    }
+    if (settingsCoins) settingsCoins.textContent = user ? user.coins.toLocaleString() : '0';
+
     const settings = getSettings();
     const soundEl = document.getElementById('soundEnabled');
     const musicEl = document.getElementById('musicEnabled');
@@ -145,7 +164,7 @@ export function loadSettingsPage() {
     if (autoEl) autoEl.checked = settings.autoSaveEnabled;
 
     const difficulty = settings.difficultyLevel || 'normal';
-    document.querySelectorAll('.difficulty-option').forEach(opt => {
+    document.querySelectorAll('.difficulty-btn, .segmented-btn').forEach(opt => {
         opt.classList.toggle('active', opt.dataset.difficulty === difficulty);
     });
     const diffInput = document.getElementById('difficultyLevel');
@@ -165,6 +184,35 @@ export function saveSettings() {
     applySettings(settings);
 }
 
+export function saveSettingsAndReturn() {
+    const user = getCurrentUser();
+    const usernameEl = document.getElementById('settingsUsername');
+    const passwordEl = document.getElementById('settingsPassword');
+
+    if (user && usernameEl) {
+        const newUsername = usernameEl.value?.trim();
+        if (newUsername && newUsername !== user.username) {
+            const r = updateUsername(newUsername);
+            if (!r.ok) {
+                if (typeof alert === 'function') alert(r.error);
+                return;
+            }
+            updateUserInfoDisplay();
+        }
+    }
+
+    if (user && passwordEl && passwordEl.value) {
+        const r = updatePassword(passwordEl.value);
+        if (!r.ok) {
+            if (typeof alert === 'function') alert(r.error);
+            return;
+        }
+    }
+
+    saveSettings();
+    navigateToPage('game');
+}
+
 export function applySettings(settings) {
     // Placeholder for applying settings to game behavior
 }
@@ -175,7 +223,7 @@ export function toggleSetting(settingId) {
 }
 
 export function selectDifficulty(level) {
-    document.querySelectorAll('.difficulty-option').forEach(opt => {
+    document.querySelectorAll('.difficulty-btn, .segmented-btn').forEach(opt => {
         opt.classList.toggle('active', opt.dataset.difficulty === level);
     });
     const diffInput = document.getElementById('difficultyLevel');
@@ -199,6 +247,10 @@ export function clearAllScores() {
 }
 
 export function navigateToPage(pageName) {
+    if (pageName === 'settings' && isGameInProgress()) {
+        if (typeof alert === 'function') alert('Cannot open Settings while a game is in progress. Finish or pause the game first.');
+        return;
+    }
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     const pageMap = { game: 'gamePage', scores: 'scoresPage', challenge: 'challengePage', settings: 'settingsPage' };
     const pageId = pageMap[pageName];

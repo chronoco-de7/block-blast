@@ -8,10 +8,16 @@ import { initGame } from './game.js';
 import { getSettings, getDailyChallenge } from './storage.js';
 import {
     navigateToPage, clearAllScores, resetSettings, saveSettings,
-    toggleSetting, selectDifficulty, applySettings
+    toggleSetting, selectDifficulty, applySettings, saveSettingsAndReturn
 } from './pages.js';
 import { showScreenshot, closeScreenshotModal, togglePause, showHint, hideHint, restartGame } from './game.js';
 import { renderShapes } from './shapes.js';
+import { getCurrentUser } from './auth.js';
+import {
+    showAuthOverlay, hideAuthOverlay, updateCoinDisplay, showStartGameOverlay,
+    setupAuthUI, handleStartGame, handlePlayAgain, signOutUser, updateUserInfoDisplay,
+    toggleUserCombo, closeUserCombo
+} from './auth-ui.js';
 
 // Wire callbacks
 callbacks.generateShapes = generateShapes;
@@ -38,7 +44,25 @@ function setupEventListeners() {
     });
 
     document.getElementById('resumeBtn')?.addEventListener('click', togglePause);
-    document.getElementById('restartBtn')?.addEventListener('click', restartGame);
+    document.getElementById('restartBtn')?.addEventListener('click', handlePlayAgain);
+
+    document.getElementById('startGameBtn')?.addEventListener('click', handleStartGame);
+
+    document.getElementById('dailyRewardCloseBtn')?.addEventListener('click', () => {
+        document.getElementById('dailyChallengeRewardModal')?.classList.remove('show');
+        updateCoinDisplay();
+    });
+
+    document.getElementById('userComboTrigger')?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleUserCombo();
+    });
+    document.getElementById('userComboDropdown')?.addEventListener('click', (e) => e.stopPropagation());
+    document.getElementById('headerSignOut')?.addEventListener('click', signOutUser);
+
+    document.addEventListener('click', () => closeUserCombo());
+
+    window.addEventListener('coinsUpdated', updateCoinDisplay);
 
     document.addEventListener('mousemove', (e) => {
         if (gameState.dragging) onDragMove(e.clientX, e.clientY);
@@ -97,23 +121,38 @@ window.navigateToPage = navigateToPage;
 window.clearAllScores = clearAllScores;
 window.resetSettings = resetSettings;
 window.saveSettings = saveSettings;
+window.saveSettingsAndReturn = saveSettingsAndReturn;
 window.startChallenge = () => {
     navigateToPage('game');
-    if (gameState.isGameOver || gameState.score === 0) restartGame();
+    if (gameState.isGameOver || gameState.score === 0) handlePlayAgain();
 };
 window.toggleSetting = toggleSetting;
 window.selectDifficulty = selectDifficulty;
 window.showScreenshot = showScreenshot;
 window.closeScreenshotModal = closeScreenshotModal;
 window.closeApp = closeApp;
+window.updateCoinDisplay = updateCoinDisplay;
+window.signOutUser = signOutUser;
 
 // Init
 document.addEventListener('DOMContentLoaded', () => {
     try {
-        initGame(setupEventListeners);
         const settings = getSettings();
         applySettings(settings);
         getDailyChallenge();
+        setupAuthUI(setupEventListeners);
+
+        const user = getCurrentUser();
+        if (user) {
+            hideAuthOverlay();
+            initGame(setupEventListeners, true);
+            updateCoinDisplay();
+            updateUserInfoDisplay();
+            showStartGameOverlay();
+        } else {
+            showAuthOverlay();
+            initGame(setupEventListeners, true);
+        }
     } catch (err) {
         console.error('Game init error:', err);
     }

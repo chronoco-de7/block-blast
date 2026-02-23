@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Block Blast - Neon Glass Edition</title>
-    <link rel="icon" href="assets/icons/block-blast-logo.svg" type="image/svg+xml">
+    <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="src/css/style.css">
 </head>
-<body class="gel-ui">
+<body>
     <div class="appRoot">
         <!-- Background ornaments -->
         <div class="bgOrb orb1"></div>
@@ -25,43 +25,15 @@
                     <img src="assets/icons/block-blast-logo.svg" alt="Block Blast" class="brandLogo" />
                 </div>
                 
-                <div class="statsRow">
-                    <div class="statCard" style="--accent: #F6C85F;">
-                        <div class="statTop">
-                            <span class="statIcon">
-                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </span>
-                            <span class="statLabel">SCORE</span>
-                        </div>
-                        <div class="statValue" id="score">0</div>
-                    </div>
-                    <div class="statCard" style="--accent: #3EDAD8;">
-                        <div class="statTop">
-                            <span class="statIcon">
-                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <rect x="3" y="3" width="7" height="7" fill="currentColor" stroke="currentColor" stroke-width="1.5" rx="1"/>
-                                    <rect x="3" y="14" width="7" height="7" fill="currentColor" stroke="currentColor" stroke-width="1.5" rx="1"/>
-                                    <rect x="14" y="3" width="7" height="7" fill="currentColor" stroke="currentColor" stroke-width="1.5" rx="1"/>
-                                    <rect x="14" y="14" width="7" height="7" fill="currentColor" stroke="currentColor" stroke-width="1.5" rx="1"/>
-                                </svg>
-                            </span>
-                            <span class="statLabel">LINES</span>
-                        </div>
-                        <div class="statValue" id="lines">0</div>
-                    </div>
-                    <div class="statCard" style="--accent: #4AA3FF;">
-                        <div class="statTop">
-                            <span class="statIcon">
-                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M12 2L4 7V12C4 16.55 7.84 20.74 12 22C16.16 20.74 20 16.55 20 12V7L12 2Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M9 12L11 14L15 10" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </span>
-                            <span class="statLabel">LEVEL</span>
-                        </div>
-                        <div class="statValue" id="level">1</div>
+                <div class="userCombo" id="headerUserInfo" style="display: none;">
+                    <button class="userCombo-trigger" id="userComboTrigger" title="Account">
+                        <span class="userCombo-name" id="headerUsername"></span>
+                        <svg class="userCombo-chevron" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                    <div class="userCombo-dropdown" id="userComboDropdown">
+                        <button class="userCombo-signOut" id="headerSignOut">Sign Out</button>
                     </div>
                 </div>
                 
@@ -83,6 +55,21 @@
                     
                     <div class="boardGrid" role="grid" aria-label="Game board">
                         <canvas id="gameBoard"></canvas>
+                        <!-- Start Game Overlay -->
+                        <div class="start-game-overlay" id="startGameOverlay">
+                            <div class="start-game-box">
+                                <h3 class="start-game-title">Ready to Play?</h3>
+                                <p class="start-game-cost">Cost: <span id="gameCostDisplay">10</span> coins</p>
+                                <p class="start-game-coins">Your coins: <span id="startGameCoins">0</span></p>
+                                <button class="glassBtn start-game-btn" id="startGameBtn">
+                                    <svg class="btnIcon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M8 5.14v13.72L19 12L8 5.14z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                                    </svg>
+                                    <span>Start Game</span>
+                                </button>
+                                <p class="start-game-insufficient" id="insufficientCoinsMsg" style="display: none;">Not enough coins. Need 10 to play.</p>
+                            </div>
+                        </div>
                         <!-- Pause Overlay -->
                         <div class="pause-overlay" id="pauseOverlay">
                             <div class="pause-status-box">
@@ -140,6 +127,24 @@
                 
                 <!-- Next Blocks -->
                 <div class="sideCard">
+                    <div class="gameStatsGrid">
+                        <div class="gameStatItem container" style="--accent: #F6C85F;">
+                            <span class="gameStatLabel">COINS</span>
+                            <span class="gameStatValue" id="coinDisplay">0</span>
+                        </div>
+                        <div class="gameStatItem container" style="--accent: #F6C85F;">
+                            <span class="gameStatLabel">SCORE</span>
+                            <span class="gameStatValue" id="score">0</span>
+                        </div>
+                        <div class="gameStatItem container" style="--accent: #3EDAD8;">
+                            <span class="gameStatLabel">LINES</span>
+                            <span class="gameStatValue" id="lines">0</span>
+                        </div>
+                        <div class="gameStatItem container" style="--accent: #4AA3FF;">
+                            <span class="gameStatLabel">LEVEL</span>
+                            <span class="gameStatValue" id="level">1</span>
+                        </div>
+                    </div>
                     <div class="sideHeader">
                         <div class="sideTitle">NEXT BLOCKS</div>
                         <div class="sideSub">Preview</div>
@@ -201,19 +206,19 @@
                     <main class="scores-content">
                         <div class="score-section score-stats-bar">
                             <div class="stats-grid">
-                                <div class="stat-card">
+                                <div class="stat-card container">
                                     <div class="stat-card-label">Total Games</div>
                                     <div class="stat-card-value" id="totalGames">0</div>
                                 </div>
-                                <div class="stat-card">
+                                <div class="stat-card container">
                                     <div class="stat-card-label">Total Lines</div>
                                     <div class="stat-card-value" id="totalLines">0</div>
                                 </div>
-                                <div class="stat-card">
+                                <div class="stat-card container">
                                     <div class="stat-card-label">Best Level</div>
                                     <div class="stat-card-value" id="bestLevel">0</div>
                                 </div>
-                                <div class="stat-card">
+                                <div class="stat-card container">
                                     <div class="stat-card-label">Avg Score</div>
                                     <div class="stat-card-value" id="avgScore">0</div>
                                 </div>
@@ -302,7 +307,7 @@
                                 </div>
                                 <div class="challenge-stat">
                                     <div class="challenge-stat-label">Reward</div>
-                                    <div class="challenge-stat-value">🏆 Bonus Points</div>
+                                    <div class="challenge-stat-value">🪙 50 Coins</div>
                                 </div>
                             </div>
                         </div>
@@ -345,172 +350,139 @@
                         </button>
                     </header>
                     
-                    <main class="settings-content">
-                        <!-- Audio Settings -->
-                        <div class="settings-section">
-                            <div class="section-header">
-                                <div class="section-icon">
-                                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M12 3V12M12 12L8 8M12 12L16 8M5 12C5 16.4183 8.58172 20 13 20C17.4183 20 21 16.4183 21 12C21 7.58172 17.4183 4 13 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
+                    <main class="settings-layout">
+                        <!-- Left: Identity & System -->
+                        <div class="settings-col settings-col--left">
+                            <div class="settings-card">
+                                <h3 class="settings-card-title">
+                                    <span class="settings-card-title-icon" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                    </span>
+                                    Account
+                                </h3>
+                                <div class="settings-field">
+                                    <label class="settings-label" for="settingsUsername">Username</label>
+                                    <input type="text" class="settings-input" id="settingsUsername" placeholder="Username" autocomplete="username">
                                 </div>
-                                <h3 class="section-title">Audio</h3>
+                                <div class="settings-field">
+                                    <label class="settings-label" for="settingsPassword">Password</label>
+                                    <input type="password" class="settings-input" id="settingsPassword" placeholder="••••••" autocomplete="new-password">
+                                </div>
+                                <button type="button" class="settings-btn settings-btn--danger-secondary" onclick="signOutUser()">Sign Out</button>
                             </div>
                             
-                            <div class="settings-grid">
-                                <div class="setting-card" onclick="toggleSetting('soundEnabled')">
-                                    <div class="setting-card-icon">
-                                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M11 5L6 9H2V15H6L11 19V5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                            <path d="M19.07 4.93C20.9447 6.80528 21.9979 9.34835 21.9979 12C21.9979 14.6517 20.9447 17.1947 19.07 19.07M15.54 8.46C16.4774 9.39764 17.0039 10.6692 17.0039 12C17.0039 13.3308 16.4774 14.6024 15.54 15.54" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                        </svg>
-                                    </div>
-                                    <div class="setting-card-content">
-                                        <div class="setting-card-title">Sound Effects</div>
-                                        <div class="setting-card-desc">Game sound effects</div>
-                                    </div>
-                                    <label class="toggle-switch">
+                            <div class="settings-card">
+                                <h3 class="settings-card-title">
+                                    <span class="settings-card-title-icon" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6v12M12 10v8M16 4v14"/></svg>
+                                    </span>
+                                    Difficulty
+                                </h3>
+                                <div class="segmented-control">
+                                    <button type="button" class="segmented-btn" data-difficulty="easy" onclick="selectDifficulty('easy')">Easy</button>
+                                    <button type="button" class="segmented-btn active" data-difficulty="normal" onclick="selectDifficulty('normal')">Normal</button>
+                                    <button type="button" class="segmented-btn" data-difficulty="hard" onclick="selectDifficulty('hard')">Hard</button>
+                                </div>
+                                <input type="hidden" id="difficultyLevel" value="normal">
+                            </div>
+                            
+                            <div class="settings-card">
+                                <h3 class="settings-card-title">
+                                    <span class="settings-card-title-icon" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+                                    </span>
+                                    Data Management
+                                </h3>
+                                <div class="settings-actions">
+                                    <button type="button" class="settings-btn settings-btn--outline" onclick="clearAllScores()">Clear Scores</button>
+                                    <button type="button" class="settings-btn settings-btn--outline-danger" onclick="resetSettings()">Reset Game</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Right: Game Experience -->
+                        <div class="settings-col settings-col--right">
+                            <div class="settings-card">
+                                <h3 class="settings-card-title">
+                                    <span class="settings-card-title-icon" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+                                    </span>
+                                    Audio
+                                </h3>
+                                <div class="settings-row" onclick="toggleSetting('soundEnabled')">
+                                    <span class="settings-row-label">Sound Effects</span>
+                                    <label class="toggle-switch" onclick="event.stopPropagation()">
                                         <input type="checkbox" id="soundEnabled" onchange="saveSettings()">
                                         <span class="toggle-slider"></span>
                                     </label>
                                 </div>
-                                
-                                <div class="setting-card" onclick="toggleSetting('musicEnabled')">
-                                    <div class="setting-card-icon">
-                                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M9 18V5L21 3V16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                            <circle cx="6" cy="18" r="3" stroke="currentColor" stroke-width="2"/>
-                                            <circle cx="18" cy="16" r="3" stroke="currentColor" stroke-width="2"/>
-                                        </svg>
-                                    </div>
-                                    <div class="setting-card-content">
-                                        <div class="setting-card-title">Music</div>
-                                        <div class="setting-card-desc">Background music</div>
-                                    </div>
-                                    <label class="toggle-switch">
+                                <div class="settings-row" onclick="toggleSetting('musicEnabled')">
+                                    <span class="settings-row-label">Music</span>
+                                    <label class="toggle-switch" onclick="event.stopPropagation()">
                                         <input type="checkbox" id="musicEnabled" onchange="saveSettings()">
                                         <span class="toggle-slider"></span>
                                     </label>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <!-- Visual Settings -->
-                        <div class="settings-section">
-                            <div class="section-header">
-                                <div class="section-icon">
-                                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M1 12S5 4 12 4S23 12 23 12S19 20 12 20S1 12 1 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                        <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
-                                    </svg>
-                                </div>
-                                <h3 class="section-title">Visual</h3>
-                            </div>
                             
-                            <div class="settings-grid">
-                                <div class="setting-card" onclick="toggleSetting('animationsEnabled')">
-                                    <div class="setting-card-icon">
-                                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M13 2L3 14H12L11 22L21 10H12L13 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                        </svg>
-                                    </div>
-                                    <div class="setting-card-content">
-                                        <div class="setting-card-title">Animations</div>
-                                        <div class="setting-card-desc">Visual effects & transitions</div>
-                                    </div>
-                                    <label class="toggle-switch">
+                            <div class="settings-card">
+                                <h3 class="settings-card-title">
+                                    <span class="settings-card-title-icon" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                    </span>
+                                    Visual
+                                </h3>
+                                <div class="settings-row" onclick="toggleSetting('animationsEnabled')">
+                                    <span class="settings-row-label">Animations</span>
+                                    <label class="toggle-switch" onclick="event.stopPropagation()">
                                         <input type="checkbox" id="animationsEnabled" checked onchange="saveSettings()">
                                         <span class="toggle-slider"></span>
                                     </label>
                                 </div>
-                                
-                                <div class="setting-card" onclick="toggleSetting('autoSaveEnabled')">
-                                    <div class="setting-card-icon">
-                                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M19 21H5C4.44772 21 4 20.5523 4 20V4C4 3.44772 4.44772 3 5 3H16L20 7V20C20 20.5523 19.5523 21 19 21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                            <path d="M17 21V13H7V21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                            <path d="M7 3V8H15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                        </svg>
-                                    </div>
-                                    <div class="setting-card-content">
-                                        <div class="setting-card-title">Auto-save</div>
-                                        <div class="setting-card-desc">Save progress automatically</div>
-                                    </div>
-                                    <label class="toggle-switch">
+                                <div class="settings-row" onclick="toggleSetting('autoSaveEnabled')">
+                                    <span class="settings-row-label">Auto-save</span>
+                                    <label class="toggle-switch" onclick="event.stopPropagation()">
                                         <input type="checkbox" id="autoSaveEnabled" checked onchange="saveSettings()">
                                         <span class="toggle-slider"></span>
                                     </label>
                                 </div>
                             </div>
                         </div>
-                        
-                        <!-- Difficulty Settings -->
-                        <div class="settings-section">
-                            <div class="section-header">
-                                <div class="section-icon">
-                                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                </div>
-                                <h3 class="section-title">Difficulty</h3>
-                            </div>
-                            
-                            <div class="difficulty-selector">
-                                <div class="difficulty-option" data-difficulty="easy" onclick="selectDifficulty('easy')">
-                                    <div class="difficulty-icon">😊</div>
-                                    <div class="difficulty-label">Easy</div>
-                                    <div class="difficulty-desc">Relaxed gameplay</div>
-                                </div>
-                                <div class="difficulty-option active" data-difficulty="normal" onclick="selectDifficulty('normal')">
-                                    <div class="difficulty-icon">😐</div>
-                                    <div class="difficulty-label">Normal</div>
-                                    <div class="difficulty-desc">Balanced challenge</div>
-                                </div>
-                                <div class="difficulty-option" data-difficulty="hard" onclick="selectDifficulty('hard')">
-                                    <div class="difficulty-icon">😤</div>
-                                    <div class="difficulty-label">Hard</div>
-                                    <div class="difficulty-desc">Maximum challenge</div>
-                                </div>
-                            </div>
-                            <input type="hidden" id="difficultyLevel" value="normal">
-                        </div>
-                        
-                        <!-- Data Management -->
-                        <div class="settings-section">
-                            <div class="section-header">
-                                <div class="section-icon">
-                                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M3 6H5H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                        <path d="M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6H19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                </div>
-                                <h3 class="section-title">Data Management</h3>
-                            </div>
-                            
-                            <div class="action-buttons">
-                                <button class="action-btn danger" onclick="clearAllScores()">
-                                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M3 6H5H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                        <path d="M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6H19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                    <span>Clear All Scores</span>
-                                </button>
-                                
-                                <button class="action-btn" onclick="resetSettings()">
-                                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M21 12C21 16.97 16.97 21 12 21C7.03 21 3 16.97 3 12C3 7.03 7.03 3 12 3C14.39 3 16.58 3.92 18.24 5.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                                        <path d="M17 3L18.24 5.5L15.75 6.74" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                    <span>Reset Settings</span>
-                                </button>
-                            </div>
-                        </div>
                     </main>
                     
-                    <footer class="footerBar">
-                        <div class="footerPill" onclick="navigateToPage('game')">Back to Game</div>
+                    <footer class="settings-footer">
+                        <button type="button" class="settings-footer-btn settings-footer-btn--ghost" onclick="navigateToPage('game')">Cancel</button>
+                        <button type="button" class="settings-footer-btn settings-footer-btn--primary" onclick="saveSettingsAndReturn()">Save</button>
                     </footer>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Auth Overlay (Login / Sign Up) -->
+    <div class="modal-overlay auth-overlay" id="authOverlay">
+        <div class="modal-content auth-modal">
+            <h2 class="modal-title">Block Blast</h2>
+            <p class="auth-subtitle">Sign in or create an account to play</p>
+            
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-tab="signin">Sign In</button>
+                <button class="auth-tab" data-tab="signup">Sign Up</button>
+            </div>
+            
+            <div class="auth-form" id="signInForm">
+                <input type="text" id="signInUsername" placeholder="Username" class="auth-input" autocomplete="username">
+                <input type="password" id="signInPassword" placeholder="Password" class="auth-input" autocomplete="current-password">
+                <p class="auth-error" id="signInError"></p>
+                <button class="modal-btn auth-submit" id="signInBtn">Sign In</button>
+            </div>
+            
+            <div class="auth-form hidden" id="signUpForm">
+                <input type="text" id="signUpUsername" placeholder="Username" class="auth-input" autocomplete="username">
+                <input type="password" id="signUpPassword" placeholder="Password (min 4 chars)" class="auth-input" autocomplete="new-password">
+                <p class="auth-error" id="signUpError"></p>
+                <button class="modal-btn auth-submit" id="signUpBtn">Create Account</button>
+                <p class="auth-bonus">New accounts receive 1,000 coins!</p>
             </div>
         </div>
     </div>
@@ -521,6 +493,7 @@
             <h2 class="modal-title">Congratulations!</h2>
             <p class="modal-message">You've cleared <span id="finalLines">0</span> lines!</p>
             <p class="modal-score">Final Score: <span id="finalScore">0</span></p>
+            <p class="modal-rewards" id="gameOverRewards">+<span id="rewardCoins">0</span> coins earned</p>
             <div class="modal-buttons">
                 <button class="modal-btn restart-btn" id="restartBtn">
                     <svg class="btnIcon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -530,6 +503,16 @@
                     <span>Play Again</span>
                 </button>
             </div>
+        </div>
+    </div>
+
+    <!-- Daily Challenge Reward Modal -->
+    <div class="modal-overlay" id="dailyChallengeRewardModal">
+        <div class="modal-content">
+            <h2 class="modal-title">Daily Challenge Complete! 🎉</h2>
+            <p class="modal-message">You've completed today's challenge!</p>
+            <p class="modal-rewards">+<span id="dailyRewardCoins">50</span> coins reward</p>
+            <button class="modal-btn" id="dailyRewardCloseBtn">Awesome!</button>
         </div>
     </div>
 
